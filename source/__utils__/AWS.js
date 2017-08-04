@@ -1,26 +1,23 @@
-import nodeModuleFs from 'fs'
 import AWS_SDK from 'aws-sdk/global'
 import AWS_SDK_S3 from 'aws-sdk/clients/s3'
 
 class AWS {
-  constructor (configJSONPath) {
-    if (!nodeModuleFs.existsSync(configJSONPath)) throw new Error(`[AWS] can't open config at: ${configJSONPath}`)
-
+  constructor ({ accessKeyId, secretAccessKey, region }) {
     try {
-      AWS_SDK.config.loadFromPath(configJSONPath)
+      AWS_SDK.config.update({ accessKeyId, secretAccessKey, region })
     } catch (error) {
       console.warn(error)
-      throw new Error(`[Error] failed to load config at: ${configJSONPath}`)
+      throw new Error(`[Error] failed to load AWS_CONFIG. region: ${region}`)
     }
 
     this.s3ServiceObject = new AWS_SDK_S3()
     this.s3BucketName = ''
   }
 
-  async selectS3Bucket (BUCKET_NAME) {
+  async selectS3Bucket (s3BucketName) {
     const { Buckets } = await listBuckets(this.s3ServiceObject)
-    if (Buckets.find(({ Name }) => Name === BUCKET_NAME)) this.s3BucketName = BUCKET_NAME
-    else throw new Error(`[selectS3Bucket] bucket not found with name: ${BUCKET_NAME}`)
+    if (Buckets.find(({ Name }) => Name === s3BucketName)) this.s3BucketName = s3BucketName
+    else throw new Error(`[selectS3Bucket] bucket not found with name: ${s3BucketName}`)
     __DEV__ && console.log(`[selectS3Bucket] selected bucket: ${this.s3BucketName}`)
   }
 

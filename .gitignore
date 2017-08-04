@@ -61,5 +61,4 @@ typings/
 .idea
 
 # distribute file
-/example
 /library

@@ -1,7 +1,6 @@
 {
   "name": "imock-fe-packager",
-  "version": "0.0.0",
-  "private": true,
+  "version": "1.0.0",
   "author": "mockingbot",
   "license": "MIT",
   "repository": {
@@ -10,12 +9,10 @@
   },
   "main": "library/index.js",
   "scripts": {
-    "example": "cross-env NODE_ENV=production webpack --watch --config config/example.conf.js",
-    "example-watch": "cross-env NODE_ENV=development webpack --watch --config config/example.conf.js",
     "library": "cross-env NODE_ENV=production webpack --config config/library.conf.js",
-    "library-watch": "cross-env NODE_ENV=production webpack --watch --config config/library.conf.js",
+    "library-dev-watch": "cross-env NODE_ENV=development webpack --watch --config config/library.conf.js",
     "build": "npm run library",
-    "start": "npm run example-watch",
+    "start": "npm run library-dev-watch",
     "prepare": "npm run build"
   },
   "engines": {
@@ -28,7 +25,7 @@
     "babel-loader": "^7.1.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
-    "cross-env": "^5.0.2",
+    "cross-env": "^5.0.3",
     "eslint": "^4.3.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.7.0",

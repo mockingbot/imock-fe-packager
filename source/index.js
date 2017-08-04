@@ -1,26 +1,6 @@
 import nodeModulePath from 'path'
-import { AWS } from './AWS'
-import { runCommand } from './runCommand'
-import { unlink, readFile, writeFile, isFileExist, formatSize } from './file'
-
-const getAWSInstance = async ({ NAME_AWS_S3_BUCKET }, PATH_PACKAGER_CONFIG) => {
-  if (!isFileExist(PATH_PACKAGER_CONFIG)) throw new Error(`[Error] can't open config at: ${PATH_PACKAGER_CONFIG}`)
-  const AWSInstance = new AWS(PATH_PACKAGER_CONFIG)
-  await AWSInstance.selectS3Bucket(NAME_AWS_S3_BUCKET)
-  return AWSInstance
-}
-
-const getGitInfo = async (config, { PACKAGER_GIT_BRANCH = '', PACKAGER_GIT_COMMIT_HASH = '' }) => {
-  if (PACKAGER_GIT_BRANCH) config.GIT_BRANCH = PACKAGER_GIT_BRANCH
-  if (PACKAGER_GIT_COMMIT_HASH) config.GIT_COMMIT_HASH = PACKAGER_GIT_COMMIT_HASH
-
-  if (!config.GIT_BRANCH) config.GIT_BRANCH = (await runCommand('git symbolic-ref --short HEAD')).stdoutString.replace('\n', '')
-  if (!config.GIT_COMMIT_HASH) config.GIT_COMMIT_HASH = (await runCommand('git log -1 --format="%H"')).stdoutString.replace('\n', '')
-
-  config.CONTENT_PACKAGE_INFO = `${config.NAME_AWS_S3_BUCKET}\n${config.GIT_BRANCH}\n${config.GIT_COMMIT_HASH}`
-  config.NAME_TAR_GZ = `[${config.NAME_AWS_S3_BUCKET}][${config.GIT_BRANCH}]${config.GIT_COMMIT_HASH}.tar.gz`
-  config.NAME_TAR_GZ_LATEST = `[${config.NAME_AWS_S3_BUCKET}][${config.GIT_BRANCH}]latest.tar.gz`
-}
+import { AWS, unlink, readFile, writeFile, formatSize } from 'source/__utils__'
+import { getGitBranch, getGitCommitHash, doTarCompress, doTarExtract, logErrorAndExit } from 'source/cli'
 
 const doList = async (config, AWSInstance) => {
   const contentList = await AWSInstance.downloadBufferList()
@@ -30,9 +10,9 @@ const doList = async (config, AWSInstance) => {
 }
 
 const doUpload = async ({ CONTENT_PACKAGE_INFO, NAME_TAR_GZ, NAME_TAR_GZ_LATEST, PATH_PACK }, AWSInstance) => {
-  PATH_PACK = nodeModulePath.resolve(nodeModulePath.dirname(FILE_SCRIPT), PATH_PACK) // relative to the path of this script
   await writeFile(nodeModulePath.join(PATH_PACK, 'PACKAGE_INFO'), CONTENT_PACKAGE_INFO)
-  const buffer = await packBuffer(PATH_PACK, NAME_TAR_GZ)
+  await doTarCompress(PATH_PACK, NAME_TAR_GZ)
+  const buffer = readFile(NAME_TAR_GZ)
   console.log(`[Upload] packed from '${PATH_PACK}', size: ${formatSize(buffer.length)}`)
   await AWSInstance.uploadBufferToBucket(NAME_TAR_GZ, buffer)
   await AWSInstance.duplicateBufferInBucket(NAME_TAR_GZ_LATEST, NAME_TAR_GZ)
@@ -41,7 +21,6 @@ const doUpload = async ({ CONTENT_PACKAGE_INFO, NAME_TAR_GZ, NAME_TAR_GZ_LATEST,
 }
 
 const doDownload = async ({ NAME_TAR_GZ, NAME_TAR_GZ_LATEST, PATH_UNPACK }, AWSInstance) => {
-  PATH_UNPACK = nodeModulePath.resolve(nodeModulePath.dirname(FILE_SCRIPT), PATH_UNPACK) // relative to the path of this script
   let buffer = null
   try {
     buffer = await AWSInstance.downloadBufferFromBucket(NAME_TAR_GZ)
@@ -52,75 +31,74 @@ const doDownload = async ({ NAME_TAR_GZ, NAME_TAR_GZ_LATEST, PATH_UNPACK }, AWSI
     buffer = await AWSInstance.downloadBufferFromBucket(NAME_TAR_GZ_LATEST)
     console.log(`[Download] downloaded '${NAME_TAR_GZ_LATEST}', size: ${formatSize(buffer.length)}`)
   }
-  await unpackBuffer(buffer, NAME_TAR_GZ, PATH_UNPACK)
+  await writeFile(NAME_TAR_GZ, buffer)
+  await doTarExtract(NAME_TAR_GZ, PATH_UNPACK)
   await unlink(NAME_TAR_GZ)
   console.log(`[Download] unpacked to '${PATH_UNPACK}'`)
 }
 
-const packBuffer = async (sourcePath = './', outputFileName = 'pack.tar.gz') => {
-  await runCommand(`tar -czf "${outputFileName}" -C ${sourcePath} .`)
-  return readFile(outputFileName)
+const applyENVConfig = (config) => {
+  const {
+    AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, AWS_S3_BUCKET,
+    PACKAGER_PATH_PACK, PACKAGER_PATH_UNPACK,
+    PACKAGER_GIT_BRANCH, PACKAGER_GIT_COMMIT_HASH
+  } = process.env
+
+  if (!AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY || !AWS_REGION) throw new Error(`[applyENVConfig] env expected: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION`)
+  config.AWS_CONFIG = { accessKeyId: AWS_ACCESS_KEY_ID, secretAccessKey: AWS_SECRET_ACCESS_KEY, region: AWS_REGION }
+
+  if (!AWS_S3_BUCKET) throw new Error(`[applyENVConfig] env expected: AWS_S3_BUCKET`)
+  config.NAME_AWS_S3_BUCKET = AWS_S3_BUCKET
+
+  if (!PACKAGER_PATH_PACK || !PACKAGER_PATH_UNPACK) throw new Error(`[applyENVConfig] env expected: PACKAGER_PATH_PACK, PACKAGER_PATH_UNPACK`)
+  config.PATH_PACK = PACKAGER_PATH_PACK
+  config.PATH_UNPACK = PACKAGER_PATH_UNPACK
+
+  if (PACKAGER_GIT_BRANCH) config.GIT_BRANCH = PACKAGER_GIT_BRANCH
+  if (PACKAGER_GIT_COMMIT_HASH) config.GIT_COMMIT_HASH = PACKAGER_GIT_COMMIT_HASH
 }
 
-const unpackBuffer = async (buffer, sourceFileName = 'pack.tar.gz', outputPath = './') => {
-  await writeFile(sourceFileName, buffer)
-  await runCommand(`tar --strip-components 1 -xzf "${sourceFileName}" -C ${outputPath}`)
+const applyJSONConfig = async (config, PATH_PACKAGER_CONFIG) => {
+  const { accessKeyId, secretAccessKey, region, IMOCK_FE_PACKAGER } = JSON.parse(await readFile(PATH_PACKAGER_CONFIG, 'utf8'))
+  Object.assign(config, {
+    ...IMOCK_FE_PACKAGER, // { NAME_AWS_S3_BUCKET, PATH_PACK, PATH_UNPACK, GIT_BRANCH, GIT_COMMIT_HASH }
+    AWS_CONFIG: { accessKeyId, secretAccessKey, region }
+  })
 }
 
-const [ FILE_NODE, FILE_SCRIPT, PATH_PACKAGER_CONFIG = '', PACKAGER_MODE = '', PACKAGER_GIT_BRANCH = '', PACKAGER_GIT_COMMIT_HASH = '' ] = process.argv
-
-// __DEV__ && console.log(process.cwd(), process.argv)
-
-const getUsage = (message) => `[imock-fe-packager]
-${message ? `\n  ${message.split('\\n').join('\\n    ')}\n` : ''}
-Usage: 
-  [node]${FILE_NODE} +
-  [script.js]${FILE_SCRIPT} +
-  [config.json]${PATH_PACKAGER_CONFIG} +
-  [mode]${PACKAGER_MODE} +
-  [git-branch] +
-  [git-commit-hash]
-
-Argument:
-  - [config.json]: 
-      config file with AWS access info, and packager operate path
-  - [mode]: 
-      should be 'upload', 'download', or 'list'
-      'list' do not need [git-branch] or [git-commit-hash]
-  - [git-branch]: 
-      optional, git branch name like 'master'
-      will get from [config.json] or 'git symbolic-ref --short HEAD'
-  - [git-commit-hash]: 
-      optional, git commit hash like 'a1b2c3d4e5f6', or 'latest' for 'download'
-      will get from [config.json] or 'git log -1 --format="%H"'
-
-Example:
-  [node] [script.js] [config.json] list
-  [node] [script.js] [config.json] upload
-  [node] [script.js] [config.json] upload [git-branch]
-  [node] [script.js] [config.json] upload [git-branch] [git-commit-hash]
-  [node] [script.js] [config.json] download
-  [node] [script.js] [config.json] download [git-branch]
-  [node] [script.js] [config.json] download [git-branch] [git-commit-hash]
-  [node] [script.js] [config.json] download [git-branch] latest
-`
-
-const onError = (error) => {
-  __DEV__ && console.warn(error)
-  console.warn(getUsage(error.message || error.toString()))
-  process.exit(1)
+const applyGitConfig = async (config) => {
+  const [ , , , , PACKAGER_GIT_BRANCH, PACKAGER_GIT_COMMIT_HASH ] = process.argv
+  config.GIT_BRANCH = PACKAGER_GIT_BRANCH || config.GIT_BRANCH || await getGitBranch()
+  config.GIT_COMMIT_HASH = PACKAGER_GIT_COMMIT_HASH || config.GIT_COMMIT_HASH || await getGitCommitHash()
+  console.log(`[imock-fe-packager] git branch: '${config.GIT_BRANCH}' git commit hash: '${config.GIT_COMMIT_HASH}'`)
 }
 
-const main = async () => {
-  if (!PATH_PACKAGER_CONFIG) throw new Error(`[config.json] config file path expected, got '${PATH_PACKAGER_CONFIG}'`)
-  const { IMOCK_FE_PACKAGER: config } = JSON.parse(await readFile(PATH_PACKAGER_CONFIG, 'utf8'))
-  const AWSInstance = await getAWSInstance(config, PATH_PACKAGER_CONFIG)
+const main = async (config = {}) => {
+  const [ , FILE_SCRIPT, PATH_PACKAGER_CONFIG, PACKAGER_MODE = '' ] = process.argv
+
+  // __DEV__ && console.log(process.cwd(), process.argv)
+
+  if (!PATH_PACKAGER_CONFIG) throw new Error(`[config] json file path or 'env' expected, got '${PATH_PACKAGER_CONFIG}'`)
+  if (PATH_PACKAGER_CONFIG.toLowerCase() === 'env') applyENVConfig(config)
+  else await applyJSONConfig(config, PATH_PACKAGER_CONFIG)
+
+  __DEV__ && console.log(config)
+
+  const AWSInstance = new AWS(config.AWS_CONFIG)
+  await AWSInstance.selectS3Bucket(config.NAME_AWS_S3_BUCKET)
+
   console.log(`[imock-fe-packager] mode: '${PACKAGER_MODE}'`)
 
   if (PACKAGER_MODE.toLowerCase() === 'list') return doList(config, AWSInstance)
 
-  await getGitInfo(config, { PACKAGER_GIT_BRANCH, PACKAGER_GIT_COMMIT_HASH })
-  console.log(`[imock-fe-packager] git branch: '${config.GIT_BRANCH}' git commit hash: '${config.GIT_COMMIT_HASH}'`)
+  config.PATH_PACK = nodeModulePath.resolve(nodeModulePath.dirname(FILE_SCRIPT), config.PATH_PACK) // relative to the path of this script
+  config.PATH_UNPACK = nodeModulePath.resolve(nodeModulePath.dirname(FILE_SCRIPT), config.PATH_UNPACK) // relative to the path of this script
+
+  await applyGitConfig(config)
+
+  config.CONTENT_PACKAGE_INFO = `${config.NAME_AWS_S3_BUCKET}\n${config.GIT_BRANCH}\n${config.GIT_COMMIT_HASH}`
+  config.NAME_TAR_GZ = `[${config.NAME_AWS_S3_BUCKET}][${config.GIT_BRANCH}]${config.GIT_COMMIT_HASH}.tar.gz`
+  config.NAME_TAR_GZ_LATEST = `[${config.NAME_AWS_S3_BUCKET}][${config.GIT_BRANCH}]latest.tar.gz`
 
   if (PACKAGER_MODE.toLowerCase() === 'upload') return doUpload(config, AWSInstance)
   if (PACKAGER_MODE.toLowerCase() === 'download') return doDownload(config, AWSInstance)
@@ -128,4 +106,4 @@ const main = async () => {
   throw new Error(`[mode] 'upload', 'download', or 'list' expected, got '${PACKAGER_MODE}'`)
 }
 
-main().catch(onError)
+main().catch(logErrorAndExit)
