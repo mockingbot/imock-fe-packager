@@ -1,11 +1,2 @@
-export {
-  getGitBranch,
-  getGitCommitHash,
-  doTarCompress,
-  doTarExtract
-} from './cmd'
-
-export {
-  logUsage,
-  logErrorAndExit
-} from './logger'
+export { getGitBranch, getGitCommitHash, doTarCompress, doTarExtract } from './cmd'
+export { parseCLI, parseENV, parseJSON, processOptionMap, exitWithError } from './option'
