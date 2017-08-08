@@ -4,13 +4,19 @@ const OPTION_CONFIG = {
   prefixENV: 'packager',
   formatList: [
     {
+      name: 'mode',
+      shortName: 'm',
+      description: `should be 'upload', 'download', or 'list'\n'list' do not need [git-branch] or [git-commit-hash]`,
+      ...OPTION_CONFIG_PRESET.OneOfString([ 'list', 'upload', 'download' ])
+    },
+    {
       name: 'config',
       shortName: 'c',
       optional: true,
       description: [
-        `# JSON`,
+        `# from JSON`,
         `  config file path with AWS access info, and packager operate path`,
-        `# ENV`,
+        `# from ENV`,
         `  set to 'env' to collect from process.env, required keys:`,
         `    aws: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, AWS_S3_BUCKET`,
         `    packager: PACKAGER_PATH_PACK, PACKAGER_PATH_UNPACK`,
@@ -19,14 +25,8 @@ const OPTION_CONFIG = {
       ].join('\n'),
       ...OPTION_CONFIG_PRESET.SingleString
     },
-    {
-      name: 'mode',
-      shortName: 'm',
-      description: `should be 'upload', 'download', or 'list'\n'list' do not need [git-branch] or [git-commit-hash]`,
-      ...OPTION_CONFIG_PRESET.OneOfString([ 'list', 'upload', 'download' ])
-    },
-    { name: 'path-pack', shortName: 'p', description: '/absolute/path/ or ./path/relative/to/packager-config.json/', ...OPTION_CONFIG_PRESET.SingleString },
-    { name: 'path-unpack', shortName: 'u', description: '/absolute/path/ or ./path/relative/to/packager-config.json/', ...OPTION_CONFIG_PRESET.SingleString },
+    { name: 'path-pack', shortName: 'p', optional: true, description: `required when 'upload'. /absolute/path/ or ./path/relative/to/packager-config.json or cwd/`, ...OPTION_CONFIG_PRESET.SingleString },
+    { name: 'path-unpack', shortName: 'u', optional: true, description: `required when 'download'. /absolute/path/ or ./path/relative/to/packager-config.json or cwd/`, ...OPTION_CONFIG_PRESET.SingleString },
     { name: 'aws-access-key-id', ...OPTION_CONFIG_PRESET.SingleString },
     { name: 'aws-secret-access-key', ...OPTION_CONFIG_PRESET.SingleString },
     { name: 'aws-region', description: `should be 'cn-north-1'`, ...OPTION_CONFIG_PRESET.SingleString },

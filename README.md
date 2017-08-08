@@ -8,34 +8,34 @@ CLI Usage:
 
 `[node] + [script] + [gnu-command-line-format]`
 
-    --config -c [OPTIONAL] [ARGUMENT=1]:
-        # JSON
-          config file path with AWS access info, and packager operate path
-        # ENV
-          set to 'env' to collect from process.env, required keys:
-            aws: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, AWS_S3_BUCKET
-            packager: PACKAGER_PATH_PACK, PACKAGER_PATH_UNPACK
-          optional keys:
-            packager: PACKAGER_GIT_BRANCH, PACKAGER_GIT_COMMIT_HASH
     --mode -m [ARGUMENT=1]:
-        should be 'upload', 'download', or 'list'
-        'list' do not need [git-branch] or [git-commit-hash]
-    --path-pack -p [ARGUMENT=1]:
-        /absolute/path/ or ./path/relative/to/packager-config.json/
-    --path-unpack -u [ARGUMENT=1]:
-        /absolute/path/ or ./path/relative/to/packager-config.json/
+      should be 'upload', 'download', or 'list'
+      'list' do not need [git-branch] or [git-commit-hash]
+    --config -c [OPTIONAL] [ARGUMENT=1]:
+      # from JSON
+        config file path with AWS access info, and packager operate path
+      # from ENV
+        set to 'env' to collect from process.env, required keys:
+          aws: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, AWS_S3_BUCKET
+          packager: PACKAGER_PATH_PACK, PACKAGER_PATH_UNPACK
+        optional keys:
+          packager: PACKAGER_GIT_BRANCH, PACKAGER_GIT_COMMIT_HASH
+    --path-pack -p [OPTIONAL] [ARGUMENT=1]:
+      required when 'upload'. /absolute/path/ or ./path/relative/to/packager-config.json or cwd/
+    --path-unpack -u [OPTIONAL] [ARGUMENT=1]:
+      required when 'download'. /absolute/path/ or ./path/relative/to/packager-config.json or cwd/
     --aws-access-key-id [ARGUMENT=1]
     --aws-secret-access-key [ARGUMENT=1]
     --aws-region [ARGUMENT=1]:
-        should be 'cn-north-1'
+      should be 'cn-north-1'
     --aws-s3-bucket [ARGUMENT=1]:
-        should be 'imock-fe'
+      should be 'imock-fe'
     --git-branch -b [OPTIONAL] [ARGUMENT=1]:
-        git branch name like 'master'
-        will get from [config] or 'git symbolic-ref --short HEAD'
+      git branch name like 'master'
+      will get from [config] or 'git symbolic-ref --short HEAD'
     --git-commit-hash -h [OPTIONAL] [ARGUMENT=1]:
-        git commit hash like 'a1b2c3d4e5f6', or 'latest' for 'download'
-        will get from [config] or 'git log -1 --format="%H"'
+      git commit hash like 'a1b2c3d4e5f6', or 'latest' for 'download'
+      will get from [config] or 'git log -1 --format="%H"'
 
 Example:
 
@@ -59,8 +59,8 @@ Example:
 ```json
 {
   "mode": "list|upload|download",
-  "pathPack": "/absolute/path/ or ./path/relative/to/cwd/",
-  "pathUnpack": "/absolute/path/ or ./path/relative/to/cwd/",
+  "pathPack": "/absolute/path/ or ./path/relative/to/packager-config.json/",
+  "pathUnpack": "/absolute/path/ or ./path/relative/to/packager-config.json/",
   "awsAccessKeyId": "HASH-HASH-HASH",
   "awsSecretAccessKey": "HASH-HASH-HASH",
   "awsRegion": "cn-north-1",

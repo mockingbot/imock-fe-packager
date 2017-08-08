@@ -54,27 +54,26 @@ const main = async () => {
   const getOption = (name) => optionMap[ name ] && optionMap[ name ].argumentList[ 0 ]
 
   const PATH_PACKAGER_CONFIG = getOption('config')
-  if (!PATH_PACKAGER_CONFIG) throw new Error(`[--config] json file path or 'env' expected, got '${PATH_PACKAGER_CONFIG}'`)
-
   let pathRelative
-  if (PATH_PACKAGER_CONFIG.toLowerCase() === 'env') {
-    __DEV__ && console.log('check env')
-    optionMap = { ...optionMap, ...parseENV(process.env) }
+  if (!PATH_PACKAGER_CONFIG) {
+    __DEV__ && console.log('all cli')
+    pathRelative = process.cwd() // relative to the path cwd
+  } else if (PATH_PACKAGER_CONFIG.toLowerCase() === 'env') {
+    __DEV__ && console.log('merge env')
+    optionMap = { ...parseENV(process.env), ...optionMap }
     pathRelative = process.cwd() // relative to the path cwd
   } else {
-    __DEV__ && console.log('check json', PATH_PACKAGER_CONFIG)
-    optionMap = { ...optionMap, ...parseJSON(JSON.parse(await readFile(PATH_PACKAGER_CONFIG, 'utf8'))) }
+    __DEV__ && console.log('merge json', PATH_PACKAGER_CONFIG)
+    optionMap = { ...parseJSON(JSON.parse(await readFile(PATH_PACKAGER_CONFIG, 'utf8'))), ...optionMap }
     pathRelative = nodeModulePath.dirname(PATH_PACKAGER_CONFIG) // relative to packager-config.json
   }
 
+  __DEV__ && Object.keys(optionMap).forEach((name) => console.log(`[${name}] ${getOption(name)}`))
   optionMap = processOptionMap(optionMap)
-  __DEV__ && console.log('processOptionMap ok')
-  // __DEV__ && console.log(optionMap)
+  __DEV__ && console.log('processOptionMap PASS')
 
   const PACKAGER_MODE = getOption('mode')
   const NAME_AWS_S3_BUCKET = getOption('aws-s3-bucket')
-  const PATH_PACK = nodeModulePath.resolve(pathRelative, getOption('path-pack'))
-  const PATH_UNPACK = nodeModulePath.resolve(pathRelative, getOption('path-unpack'))
 
   const AWSInstance = new AWS({
     accessKeyId: getOption('aws-access-key-id'),
@@ -91,8 +90,13 @@ const main = async () => {
   const NAME_TAR_GZ_LATEST = `[${NAME_AWS_S3_BUCKET}][${GIT_BRANCH}]latest.tar.gz`
   const CONTENT_PACKAGE_INFO = `${NAME_AWS_S3_BUCKET}\n${GIT_BRANCH}\n${GIT_COMMIT_HASH}\n${(new Date()).toISOString()}\n`
 
-  if (PACKAGER_MODE === 'upload') return doUpload(AWSInstance, { CONTENT_PACKAGE_INFO, NAME_TAR_GZ, NAME_TAR_GZ_LATEST, PATH_PACK })
-  if (PACKAGER_MODE === 'download') return doDownload(AWSInstance, { NAME_TAR_GZ, NAME_TAR_GZ_LATEST, PATH_UNPACK })
+  if (PACKAGER_MODE === 'upload') {
+    const PATH_PACK = nodeModulePath.resolve(pathRelative, getOption('path-pack'))
+    return doUpload(AWSInstance, { CONTENT_PACKAGE_INFO, NAME_TAR_GZ, NAME_TAR_GZ_LATEST, PATH_PACK })
+  } else if (PACKAGER_MODE === 'download') {
+    const PATH_UNPACK = nodeModulePath.resolve(pathRelative, getOption('path-unpack'))
+    return doDownload(AWSInstance, { NAME_TAR_GZ, NAME_TAR_GZ_LATEST, PATH_UNPACK })
+  }
 }
 
 main().catch(exitWithError)
