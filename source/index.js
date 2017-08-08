@@ -24,7 +24,7 @@ const doList = async (AWSInstance) => {
 const doUpload = async (AWSInstance, { CONTENT_PACKAGE_INFO, NAME_TAR_GZ, NAME_TAR_GZ_LATEST, PATH_PACK }) => {
   await writeFile(nodeModulePath.join(PATH_PACK, 'PACKAGE_INFO'), CONTENT_PACKAGE_INFO)
   await doTarCompress(PATH_PACK, NAME_TAR_GZ)
-  const buffer = readFile(NAME_TAR_GZ)
+  const buffer = await readFile(NAME_TAR_GZ)
   console.log(`[Upload] packed from '${PATH_PACK}', size: ${formatSize(buffer.length)}`)
   await AWSInstance.uploadBufferToBucket(NAME_TAR_GZ, buffer)
   await AWSInstance.duplicateBufferInBucket(NAME_TAR_GZ_LATEST, NAME_TAR_GZ)
