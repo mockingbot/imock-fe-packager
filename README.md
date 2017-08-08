@@ -72,13 +72,13 @@ Example:
 #### packager env
 
 ```bash
-export PACKAGER_MODE=$'\"list|upload|download\"'
-export PACKAGER_PATH_PACK=$'\"/absolute/path/ or ./path/relative/to/cwd/\"'
-export PACKAGER_PATH_UNPACK=$'\"/absolute/path/ or ./path/relative/to/cwd/\"'
-export PACKAGER_AWS_ACCESS_KEY_ID=$'\"HASH-HASH-HASH\"'
-export PACKAGER_AWS_SECRET_ACCESS_KEY=$'\"HASH-HASH-HASH\"'
-export PACKAGER_AWS_REGION=$'\"cn-north-1\"'
-export PACKAGER_AWS_S3_BUCKET=$'\"imock-fe\"'
-export PACKAGER_GIT_BRANCH=$'\"if set: cmd option > priority > auto git search\"'
-export PACKAGER_GIT_COMMIT_HASH=$'\"if set: cmd option > priority > auto git search\"'
+export PACKAGER_MODE="list|upload|download"
+export PACKAGER_PATH_PACK="/absolute/path/ or ./path/relative/to/cwd/"
+export PACKAGER_PATH_UNPACK="/absolute/path/ or ./path/relative/to/cwd/"
+export PACKAGER_AWS_ACCESS_KEY_ID="HASH-HASH-HASH"
+export PACKAGER_AWS_SECRET_ACCESS_KEY="HASH-HASH-HASH"
+export PACKAGER_AWS_REGION="cn-north-1"
+export PACKAGER_AWS_S3_BUCKET="imock-fe"
+export PACKAGER_GIT_BRANCH="if set: cmd option > priority > auto git search"
+export PACKAGER_GIT_COMMIT_HASH="if set: cmd option > priority > auto git search"
 ```

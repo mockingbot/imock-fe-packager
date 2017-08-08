@@ -121,7 +121,9 @@ const createOptionParser = ({ formatList, prefixENV = '', prefixJSON = '' }) => 
     ENVNameMap.forEach((format, nameENV) => {
       let value = envObject[ nameENV ]
       if (!value) return
-      value = JSON.parse(value)
+      try {
+        value = JSON.parse(value)
+      } catch (error) { __DEV__ && console.log(`[parseENV] not JSON string ${value}\n${error}`) }
       optionMap[ format.name ] = { format, argumentList: Array.isArray(value) ? value : [ value ] }
     })
     return optionMap
@@ -181,7 +183,7 @@ const formatUsageCLI = (formatList) => formatList.map(({ name, shortName, option
   formatUsageBase(`--${name}${shortName ? ` -${shortName}` : ''}`, optional, argumentLength, argumentLengthExtend) +
   (description ? `:\n${stringIndentLine(description, '    ')}` : '')
 )).join('\n')
-const formatUsageENV = (formatList) => `"\n  #!/bin/bash\n${formatList.map(({ name, nameENV, optional, argumentLength, argumentLengthExtend }) => `  export ${nameENV}=$'[ \\"${formatUsageBase(name, optional, argumentLength, argumentLengthExtend)}\\" ]'`).join('\n')}\n"`
+const formatUsageENV = (formatList) => `"\n  #!/bin/bash\n${formatList.map(({ name, nameENV, optional, argumentLength, argumentLengthExtend }) => `  export ${nameENV}="${formatUsageBase(name, optional, argumentLength, argumentLengthExtend)}"`).join('\n')}\n"`
 const formatUsageJSON = (formatList) => `{\n${formatList.map(({ name, nameJSON, optional, argumentLength, argumentLengthExtend }) => `  "${nameJSON}": [ "${formatUsageBase(name, optional, argumentLength, argumentLengthExtend)}" ]`).join(',\n')}\n}`
 
 const normalizeToString = (argumentList) => argumentList.map(String)
