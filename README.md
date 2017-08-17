@@ -40,18 +40,18 @@ CLI Usage:
 Example:
 
 ```
-  [node] [script] --config packaget-config.json --mode list
-  [node] [script] --config=packaget-config.json --mode=list
-  [node] [script] -c packaget-config.json -m list
-  [node] [script] -c=packaget-config.json -m=list
+  [node] [script] --config packager-config.json --mode list
+  [node] [script] --config=packager-config.json --mode=list
+  [node] [script] -c packager-config.json -m list
+  [node] [script] -c=packager-config.json -m=list
   [node] [script] -c=env -m=list
-  [node] [script] -c packaget-config.json -m upload
-  [node] [script] -c packaget-config.json -m upload -b git-branch
-  [node] [script] -c packaget-config.json -m upload -b git-branch -h git-commit-hash
-  [node] [script] -c packaget-config.json -m download
-  [node] [script] -c packaget-config.json -m download -b git-branch
-  [node] [script] -c packaget-config.json -m download -b git-branch -h git-commit-hash
-  [node] [script] -c packaget-config.json -m download -b git-branch -h latest
+  [node] [script] -c packager-config.json -m upload
+  [node] [script] -c packager-config.json -m upload -b git-branch
+  [node] [script] -c packager-config.json -m upload -b git-branch -h git-commit-hash
+  [node] [script] -c packager-config.json -m download
+  [node] [script] -c packager-config.json -m download -b git-branch
+  [node] [script] -c packager-config.json -m download -b git-branch -h git-commit-hash
+  [node] [script] -c packager-config.json -m download -b git-branch -h latest
 ```
 
 #### packager-config.json
