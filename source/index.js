@@ -51,11 +51,11 @@ const main = async () => {
 
   const GIT_BRANCH = getOption('git-branch') || await getGitBranch()
   const GIT_COMMIT_HASH = getOption('git-commit-hash') || await getGitCommitHash()
-  const NAME_TAR_GZ = `[${NAME_AWS_S3_BUCKET}][${GIT_BRANCH}]${GIT_COMMIT_HASH}.tar.gz`
+  const NAME_TAR_GZ = formatFilename(`[${NAME_AWS_S3_BUCKET}][${GIT_BRANCH}]${GIT_COMMIT_HASH}.tar.gz`)
 
   if (PACKAGER_MODE === 'upload') {
-    const CONTENT_PACKAGE_INFO = `${NAME_AWS_S3_BUCKET}\n${GIT_BRANCH}\n${GIT_COMMIT_HASH}\n${(new Date()).toISOString()}\n`
-    const NAME_TAR_GZ_LATEST = `[${NAME_AWS_S3_BUCKET}][${GIT_BRANCH}]latest.tar.gz`
+    const CONTENT_PACKAGE_INFO = [ NAME_AWS_S3_BUCKET, GIT_BRANCH, GIT_COMMIT_HASH, (new Date()).toISOString() ].join('\n')
+    const NAME_TAR_GZ_LATEST = formatFilename(`[${NAME_AWS_S3_BUCKET}][${GIT_BRANCH}]latest.tar.gz`)
     const PATH_PACK = nodeModulePath.resolve(pathRelative, getOption('path-pack'))
     return doUpload(AWSInstance, { CONTENT_PACKAGE_INFO, NAME_TAR_GZ, NAME_TAR_GZ_LATEST, PATH_PACK })
   } else if (PACKAGER_MODE === 'download') {
@@ -63,5 +63,7 @@ const main = async () => {
     return doDownload(AWSInstance, { NAME_TAR_GZ, PATH_UNPACK })
   }
 }
+
+const formatFilename = (filename = '') => filename.replace(/[/:;*%?]/g, '_')
 
 main().catch(exitWithError)
