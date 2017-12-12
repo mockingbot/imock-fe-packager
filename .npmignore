@@ -1,4 +1,6 @@
+# source files
+**/*-gitignore/**
 /.*
-/config
+/*.tgz
+/*.lock
 /source
-/imock-fe-packager*
