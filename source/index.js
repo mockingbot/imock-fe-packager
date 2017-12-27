@@ -15,21 +15,24 @@ const main = async () => {
     })
     await AWSInstance.selectS3Bucket(nameAWSS3Bucket)
 
-    if (mode === 'list') return doList(AWSInstance)
+    if (mode === 'list') {
+      await doList(AWSInstance)
+      return
+    }
 
     const gitBranch = getSingleOptionOptional(optionMap, 'git-branch') || await getGitBranch()
     const gitCommitHash = getSingleOptionOptional(optionMap, 'git-commit-hash') || await getGitCommitHash()
 
     const nameFileTarGz = formatFilename(`[${nameAWSS3Bucket}][${gitBranch}]${gitCommitHash}.tar.gz`)
     if (mode === 'upload') {
-      return doUpload(AWSInstance, {
+      await doUpload(AWSInstance, {
         pathPack: getSingleOption(optionMap, 'path-pack'),
         nameFileTarGz,
         nameFileLatestTarGz: formatFilename(`[${nameAWSS3Bucket}][${gitBranch}]latest.tar.gz`),
         packageInfoString: [ nameAWSS3Bucket, gitBranch, gitCommitHash, (new Date()).toISOString() ].join('\n')
       })
     } else if (mode === 'download') {
-      return doDownload(AWSInstance, {
+      await doDownload(AWSInstance, {
         pathUnpack: getSingleOption(optionMap, 'path-unpack'),
         nameFileTarGz
       })

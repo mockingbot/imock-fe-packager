@@ -49,7 +49,6 @@ class AWS {
 }
 
 // check: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html
-
 const listBuckets = (s3ServiceObject) => new Promise((resolve, reject) => s3ServiceObject.listBuckets(
   (error, data) => error ? reject(error) : resolve(data)
 ))
@@ -74,6 +73,4 @@ const copyObject = (s3ServiceObject, bucketName, key, sourceBucketName, sourceKe
   (error, data) => error ? reject(error) : resolve(data)
 ))
 
-export {
-  AWS
-}
+export { AWS }
