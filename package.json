@@ -1,6 +1,6 @@
 {
   "name": "imock-fe-packager",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "mockingbot",
   "license": "MIT",
   "description": "Upload/Download compiled webpack files to/from AWS S3.",

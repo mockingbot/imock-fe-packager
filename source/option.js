@@ -21,8 +21,8 @@ const OPTION_CONFIG = {
       name: 'mode',
       shortName: 'm'
     },
-    { ...SingleStringPathFormat, name: 'path-pack', shortName: 'p', optional: checkOptional('config', 'upload'), description: `required for mode 'upload'` },
-    { ...SingleStringPathFormat, name: 'path-unpack', shortName: 'u', optional: checkOptional('config', 'download'), description: `required for mode 'download'` },
+    { ...SingleStringPathFormat, name: 'path-pack', shortName: 'p', optional: checkOptional('mode', 'upload'), description: `required for mode 'upload'` },
+    { ...SingleStringPathFormat, name: 'path-unpack', shortName: 'u', optional: checkOptional('mode', 'download'), description: `required for mode 'download'` },
     { ...SingleString, name: 'aws-access-key-id' },
     { ...SingleString, name: 'aws-secret-access-key' },
     { ...SingleString, name: 'aws-region', description: `S3 region name, sample: 'cn-north-1'` },
