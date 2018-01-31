@@ -1,8 +1,9 @@
-import { createOptionParser, OPTION_CONFIG_PRESET } from 'dr-js/module/common/module/OptionParser'
+import { createOptionParser } from 'dr-js/module/common/module/OptionParser'
+import { OPTION_CONFIG_PRESET } from 'dr-js/module/common/module/OptionParserConfigPreset'
 import { parseOptionMap, createOptionGetter } from 'dr-js/module/node/module/ParseOption'
 
 const { SingleString, OneOfString } = OPTION_CONFIG_PRESET
-const SingleStringPathFormat = { ...SingleString, isPath: true }
+const SingleStringPath = { ...SingleString, isPath: true }
 
 const checkOptional = (name, value) => (optionMap) => optionMap[ name ].argumentList[ 0 ] !== value
 
@@ -21,8 +22,8 @@ const OPTION_CONFIG = {
       name: 'mode',
       shortName: 'm'
     },
-    { ...SingleStringPathFormat, optional: checkOptional('mode', 'upload'), name: 'path-pack', shortName: 'p', description: `required for mode 'upload'` },
-    { ...SingleStringPathFormat, optional: checkOptional('mode', 'download'), name: 'path-unpack', shortName: 'u', description: `required for mode 'download'` },
+    { ...SingleStringPath, optional: checkOptional('mode', 'upload'), name: 'path-pack', shortName: 'p', description: `required for mode 'upload'` },
+    { ...SingleStringPath, optional: checkOptional('mode', 'download'), name: 'path-unpack', shortName: 'u', description: `required for mode 'download'` },
     {
       optional: true,
       name: 'service-aws',
@@ -55,15 +56,6 @@ const OPTION_CONFIG = {
 
 const { parseCLI, parseENV, parseJSON, processOptionMap, formatUsage } = createOptionParser(OPTION_CONFIG)
 
-const parseOption = async () => {
-  const optionMap = await parseOptionMap({ parseCLI, parseENV, parseJSON, processOptionMap })
-  return { optionMap, ...createOptionGetter(optionMap) }
-}
+const parseOption = async () => createOptionGetter(await parseOptionMap({ parseCLI, parseENV, parseJSON, processOptionMap }))
 
-const exitWithError = (error) => {
-  __DEV__ && console.warn(error)
-  !__DEV__ && console.warn(formatUsage(error.message || error.toString()))
-  process.exit(1)
-}
-
-export { parseOption, exitWithError }
+export { parseOption, formatUsage }

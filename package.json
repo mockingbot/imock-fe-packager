@@ -1,9 +1,9 @@
 {
   "name": "imock-fe-packager",
-  "version": "2.0.0-dev.0",
+  "version": "2.0.0-dev.1",
   "author": "mockingbot",
   "license": "MIT",
-  "description": "Upload/Download compiled webpack files to/from AWS S3.",
+  "description": "Upload/Download directory to/from AWS-S3/TenCent-Cloud.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mockingbot/imock-fe-packager.git"
@@ -24,9 +24,9 @@
     "npm": ">=5"
   },
   "devDependencies": {
-    "aws-sdk": "^2.186.0",
-    "dev-dep-web": "^0.0.11",
-    "dr-js": "^0.10.1-dev.3",
-    "cos-nodejs-sdk-v5": "^2.2.6"
+    "aws-sdk": "^2.188.0",
+    "cos-nodejs-sdk-slim": "^2.2.6",
+    "dev-dep-web": "^0.0.12",
+    "dr-js": "^0.11.0-dev.1"
   }
 }

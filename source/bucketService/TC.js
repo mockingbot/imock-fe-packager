@@ -1,4 +1,4 @@
-import TC_SDK from 'cos-nodejs-sdk-v5' // TenCent Cloud
+import TC_SDK from 'cos-nodejs-sdk-slim' // TenCent Cloud
 
 const connectTcBucket = async ({ appId, secretId, secretKey, region, bucket }) => {
   let tcService

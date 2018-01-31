@@ -1,6 +1,6 @@
 import { connectAwsBucket } from './bucketService/AWS'
 import { connectTcBucket } from './bucketService/TC'
-import { parseOption, exitWithError } from './option'
+import { parseOption, formatUsage } from './option'
 import { getGitBranch, getGitCommitHash, doList, doUpload, doDownload } from './cmd'
 
 const main = async () => {
@@ -63,4 +63,7 @@ const main = async () => {
 
 const formatFilename = (filename = '') => filename.replace(/[/:;*%?]/g, '_')
 
-main().catch(exitWithError)
+main().catch((error) => {
+  console.warn(formatUsage(error.stack || error.message || error.toString()))
+  process.exit(1)
+})
