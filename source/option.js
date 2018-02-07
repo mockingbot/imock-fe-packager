@@ -1,34 +1,24 @@
-import { createOptionParser } from 'dr-js/module/common/module/OptionParser'
-import { OPTION_CONFIG_PRESET } from 'dr-js/module/common/module/OptionParserConfigPreset'
-import { parseOptionMap, createOptionGetter } from 'dr-js/module/node/module/ParseOption'
+import { createOptionParser } from 'dr-js/module/common/module/Option/Parser'
+import { ConfigPreset, getOptionalFormatValue } from 'dr-js/module/common/module/Option/Preset'
+import { parseOptionMap, createOptionGetter } from 'dr-js/module/node/module/Option'
 
-const { SingleString, OneOfString } = OPTION_CONFIG_PRESET
-const SingleStringPath = { ...SingleString, isPath: true }
-
-const checkOptional = (name, value) => (optionMap) => optionMap[ name ].argumentList[ 0 ] !== value
+const { SingleString, OneOfString, BooleanFlag, Config } = ConfigPreset
 
 const OPTION_CONFIG = {
   prefixENV: 'packager',
   formatList: [
-    {
-      ...SingleString,
-      optional: true,
-      name: 'config',
-      shortName: 'c',
-      description: `# from JSON: set to 'path/to/config.json'\n# from ENV: set to 'env'`
-    },
+    Config,
     {
       ...OneOfString([ 'list', 'upload', 'download' ]),
       name: 'mode',
       shortName: 'm'
     },
-    { ...SingleStringPath, optional: checkOptional('mode', 'upload'), name: 'path-pack', shortName: 'p', description: `required for mode 'upload'` },
-    { ...SingleStringPath, optional: checkOptional('mode', 'download'), name: 'path-unpack', shortName: 'u', description: `required for mode 'download'` },
+    { ...SingleString, isPath: true, optional: getOptionalFormatValue('mode', 'upload'), name: 'path-pack', shortName: 'p', description: `required for mode 'upload'` },
+    { ...SingleString, isPath: true, optional: getOptionalFormatValue('mode', 'download'), name: 'path-unpack', shortName: 'u', description: `required for mode 'download'` },
     {
-      optional: true,
+      ...BooleanFlag,
       name: 'service-aws',
       shortName: 'a',
-      argumentCount: '0+',
       extendFormatList: [
         { ...SingleString, name: 'aws-access-key-id' },
         { ...SingleString, name: 'aws-secret-access-key' },
@@ -37,10 +27,9 @@ const OPTION_CONFIG = {
       ]
     },
     {
-      optional: true,
+      ...BooleanFlag,
       name: 'service-tc',
       shortName: 't',
-      argumentCount: '0+',
       extendFormatList: [
         { ...SingleString, name: 'tc-app-id' },
         { ...SingleString, name: 'tc-secret-id' },
