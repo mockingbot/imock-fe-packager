@@ -1,32 +1,37 @@
 {
+  "private": true,
   "name": "imock-fe-packager",
-  "version": "2.0.0-dev.2",
+  "version": "2.0.0-dev.3",
   "author": "mockingbot",
   "license": "MIT",
   "description": "Upload/Download directory to/from AWS-S3/TenCent-Cloud.",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mockingbot/imock-fe-packager.git"
-  },
+  "repository": "https://github.com/mockingbot/imock-fe-packager.git",
   "bin": "bin/index.js",
-  "main": "library/index.js",
   "scripts": {
-    "build": "npm run build-library",
-    "build-library": "cross-env NODE_ENV=production webpack --config .webpackrc.js",
-    "build-library-dev": "cross-env NODE_ENV=development webpack --config .webpackrc.js --watch",
-    "start": "npm run build-library-dev",
-    "prepack": "npm run build",
-    "publish-latest": "npm publish --userconfig ~/thatbean.npmrc",
-    "publish-dev": "npm publish --tag dev --userconfig ~/thatbean.npmrc"
+    "// script ======================": "",
+    "script-base": "cross-env BABEL_ENV=dev babel-node ./script",
+    "script-pack": "cross-env BABEL_ENV=dev babel-node ./script pack",
+    "script-publish": "cross-env BABEL_ENV=dev babel-node ./script pack publish",
+    "script-publish-dev": "cross-env BABEL_ENV=dev babel-node ./script pack publish-dev",
+    "// build =======================": "",
+    "build-library": "cross-env BABEL_ENV=dev babel-node ./script/webpack production profile",
+    "build-library-dev": "cross-env BABEL_ENV=dev babel-node ./script/webpack development",
+    "// ==============================": "",
+    "analyze-stat": "webpack-bundle-analyzer ./profile-stat-gitignore.json",
+    "prepack": "echo \"Error: should run pack with script-*\" && exit 1"
   },
   "engines": {
     "node": ">=8",
     "npm": ">=5"
   },
   "devDependencies": {
-    "aws-sdk": "^2.190.0",
-    "cos-nodejs-sdk-slim": "^2.2.6",
-    "dev-dep-web": "^0.0.13",
-    "dr-js": "^0.11.1-dev.1"
+    "aws-sdk": "^2.206.0",
+    "cos-nodejs-sdk-slim": "2.2.6-dev.0",
+    "dev-dep-tool": "^0.0.14-dev.9",
+    "dev-dep-web": "^0.0.14-dev.8",
+    "dr-js": "^0.12.0",
+    "webpack-bundle-analyzer": "^2.11.1",
+    "babel-plugin-lodash": "^3.3.2",
+    "lodash-webpack-plugin": "^0.11.4"
   }
 }

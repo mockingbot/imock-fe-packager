@@ -10,5 +10,5 @@ node_modules
 
 # distribute file
 **/*-gitignore/**
+**/*-gitignore*
 /*.tgz
-/library
