@@ -1,5 +1,4 @@
-import { connectAwsBucket } from './bucketService/AWS'
-import { connectTcBucket } from './bucketService/TC'
+import { connectAwsBucket, connectTcBucket } from 'bucket-sdk'
 import { parseOption, formatUsage } from './option'
 import { getGitBranch, getGitCommitHash, doList, doUpload, doDownload } from './cmd'
 import { name as packageName, version as packageVersion } from '../package.json'

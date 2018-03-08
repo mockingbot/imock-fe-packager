@@ -1,6 +1,5 @@
 import { resolve as resolvePath } from 'path'
-import { DefinePlugin, HashedModuleIdsPlugin } from 'webpack'
-import LodashWebpackPlugin from 'lodash-webpack-plugin'
+import { DefinePlugin } from 'webpack'
 
 import { argvFlag, runMain } from 'dev-dep-tool/library/__utils__'
 import { compileWithWebpack } from 'dev-dep-tool/library/webpack'
@@ -21,7 +20,7 @@ runMain(async (logger) => {
     babelrc: false,
     cacheDirectory: isProduction,
     presets: [ [ '@babel/env', { targets: { node: 8 }, modules: false } ] ],
-    plugins: [ [ 'lodash' ], [ '@babel/proposal-class-properties' ], [ '@babel/proposal-object-rest-spread', { useBuiltIns: true } ] ]
+    plugins: [ [ '@babel/proposal-class-properties' ], [ '@babel/proposal-object-rest-spread', { useBuiltIns: true } ] ]
   }
 
   const config = {
@@ -32,11 +31,7 @@ runMain(async (logger) => {
     entry: { index: 'source/index' },
     resolve: { alias: { source: fromRoot('source') } },
     module: { rules: [ { test: /\.js$/, use: [ { loader: 'babel-loader', options: babelOption } ] } ] },
-    plugins: [
-      new LodashWebpackPlugin(),
-      new DefinePlugin({ 'process.env.NODE_ENV': JSON.stringify(mode), '__DEV__': !isProduction }),
-      new HashedModuleIdsPlugin()
-    ]
+    plugins: [ new DefinePlugin({ 'process.env.NODE_ENV': JSON.stringify(mode), '__DEV__': !isProduction }) ]
   }
 
   logger.padLog(`compile with webpack mode: ${mode}, isWatch: ${Boolean(isWatch)}`)
