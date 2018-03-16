@@ -1,6 +1,12 @@
 import { connectAwsBucket, connectTcBucket } from 'bucket-sdk'
 import { parseOption, formatUsage } from './option'
-import { getGitBranch, getGitCommitHash, doList, doUpload, doDownload } from './cmd'
+import {
+  getGitBranch, getGitCommitHash,
+  doList,
+  doUpload, doUploadFile,
+  doDownload, doDownloadFile,
+  doDeleteOutdated, doDeleteFile
+} from './cmd'
 import { name as packageName, version as packageVersion } from '../package.json'
 
 const formatFilename = (filename = '') => filename.replace(/[/:;*%?]/g, '_')
@@ -31,26 +37,27 @@ const runMode = async (mode, { getOptionOptional, getSingleOption, getSingleOpti
     bucket
   }) : null
 
-  if (mode === 'list') {
-    await doList(bucketService)
-    return
-  }
+  if (mode === 'list') return doList(bucketService, { listKeyPrefix: getSingleOptionOptional('list-key-prefix') })
+  if (mode === 'delete-outdated') return doDeleteOutdated(bucketService, { outdatedTime: getSingleOptionOptional('delete-outdated-time') })
+
+  const uploadPublicReadAccess = Boolean(getOptionOptional('upload-public-read-access'))
+
+  if (mode === 'upload-file') return doUploadFile(bucketService, { pathFile: getSingleOption('path-file'), keyFile: getSingleOption('key-file'), uploadPublicReadAccess })
+  if (mode === 'download-file') return doDownloadFile(bucketService, { pathFile: getSingleOption('path-file'), keyFile: getSingleOption('key-file') })
+  if (mode === 'delete-file') return doDeleteFile(bucketService, { keyFile: getSingleOption('key-file') })
 
   const gitBranch = getSingleOptionOptional('git-branch') || getGitBranch()
   const gitCommitHash = getSingleOptionOptional('git-commit-hash') || getGitCommitHash()
-
   const nameFileTarGz = formatFilename(`[${gitBranch}]${gitCommitHash}.tar.gz`)
+
+  if (mode === 'download') return doDownload(bucketService, { pathUnpack: getSingleOption('path-unpack'), nameFileTarGz })
   if (mode === 'upload') {
     await doUpload(bucketService, {
       pathPack: getSingleOption('path-pack'),
       nameFileTarGz,
       nameFileLatestTarGz: formatFilename(`[${gitBranch}]latest.tar.gz`),
-      packageInfoString: [ region, bucket, gitBranch, gitCommitHash, (new Date()).toISOString() ].join('\n')
-    })
-  } else if (mode === 'download') {
-    await doDownload(bucketService, {
-      pathUnpack: getSingleOption('path-unpack'),
-      nameFileTarGz
+      packageInfoString: [ region, bucket, gitBranch, gitCommitHash, (new Date()).toISOString() ].join('\n'),
+      uploadPublicReadAccess
     })
   }
 }
