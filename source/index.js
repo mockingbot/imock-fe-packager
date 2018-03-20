@@ -1,12 +1,10 @@
 import { connectAwsBucket, connectTcBucket } from 'bucket-sdk'
 import { parseOption, formatUsage } from './option'
-import {
-  getGitBranch, getGitCommitHash,
-  doList,
-  doUpload, doUploadFile,
-  doDownload, doDownloadFile,
-  doDeleteOutdated, doDeleteFile
-} from './cmd'
+import { getGitBranch, getGitCommitHash } from './cmd/__utils__'
+import { doList } from './cmd/list'
+import { doUpload, doUploadFile } from './cmd/upload'
+import { doDownload, doDownloadFile } from './cmd/download'
+import { doDeleteOutdated, doDeleteFile } from './cmd/delete'
 import { name as packageName, version as packageVersion } from '../package.json'
 
 const formatFilename = (filename = '') => filename.replace(/[/:;*%?]/g, '_')
@@ -63,23 +61,18 @@ const runMode = async (mode, { getOptionOptional, getSingleOption, getSingleOpti
 }
 
 const main = async () => {
-  const { getOptionOptional, getSingleOption, getSingleOptionOptional } = await parseOption()
+  const optionData = await parseOption()
+  const mode = optionData.getSingleOptionOptional('mode')
 
-  const mode = getSingleOptionOptional('mode')
   if (mode) {
-    await runMode(mode, { getOptionOptional, getSingleOption, getSingleOptionOptional }).catch((error) => {
-      console.warn(`[Error] in mode: ${mode}:`, error)
+    await runMode(mode, optionData).catch((error) => {
+      console.warn(`[Error] in mode: ${mode}:`, error.stack || error)
       process.exit(2)
     })
-    return
-  }
-
-  if (getOptionOptional('version')) return console.log(JSON.stringify({ packageName, packageVersion }, null, '  '))
-
-  console.log(formatUsage())
+  } else optionData.getOptionOptional('version') ? console.log(JSON.stringify({ packageName, packageVersion }, null, '  ')) : console.log(formatUsage())
 }
 
 main().catch((error) => {
-  console.warn(formatUsage(error.stack || error.message || error.toString()))
+  console.warn(formatUsage(error.stack || error, 'simple'))
   process.exit(1)
 })

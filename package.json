@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "imock-fe-packager",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "author": "mockingbot",
   "license": "MIT",
   "description": "Upload/Download directory to/from AWS-S3/TenCent-Cloud.",
@@ -18,7 +18,7 @@
     "build-library-dev": "babel-node ./script/webpack development watch",
     "// ==============================": "",
     "analyze-stat": "webpack-bundle-analyzer ./profile-stat-gitignore.json",
-    "prepack": "echo \"Error: should run pack with script-*\" && exit 1"
+    "prepack": "echo \"Error: pack with script-*\" && exit 1"
   },
   "engines": {
     "node": ">=8",
