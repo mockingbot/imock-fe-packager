@@ -114,7 +114,7 @@ const doDeleteOutdated = async (bucketService, { outdatedTime = DEFAULT_OUTDATED
     .map(({ key }) => key)
   if (deleteKeyList.length) {
     await bucketService.deleteBufferList(deleteKeyList)
-    console.log(`[DeleteOutdated] deleted ${deleteKeyList.length} outdated buffer since ${new Date(maxDeleteTimestamp).toISOString()}`)
+    console.log(`[DeleteOutdated] deleted ${deleteKeyList.length} outdated buffer from ${bufferList.length} listed since ${new Date(maxDeleteTimestamp).toISOString()}`)
   } else {
     console.log(`[DeleteOutdated] no outdated buffer since ${new Date(maxDeleteTimestamp).toISOString()}`)
   }

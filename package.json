@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "imock-fe-packager",
-  "version": "2.0.0-dev.5",
+  "version": "2.0.0",
   "author": "mockingbot",
   "license": "MIT",
   "description": "Upload/Download directory to/from AWS-S3/TenCent-Cloud.",
@@ -9,8 +9,8 @@
   "bin": "bin/index.js",
   "scripts": {
     "// script ======================": "",
-    "script-base": "babel-node ./script",
-    "script-pack": "babel-node ./script pack",
+    "script-base": "babel-node ./script quiet",
+    "script-pack": "babel-node ./script quiet pack",
     "script-publish": "babel-node ./script pack publish",
     "script-publish-dev": "babel-node ./script pack publish-dev",
     "// build =======================": "",
@@ -25,10 +25,10 @@
     "npm": ">=5"
   },
   "devDependencies": {
-    "bucket-sdk": "^0.1.0-dev.0",
-    "dev-dep-tool": "^0.1.0-dev.0",
-    "dev-dep-web": "^0.1.0-dev.1",
-    "dr-js": "^0.12.1-dev.2",
+    "bucket-sdk": "^0.1.1",
+    "dev-dep-tool": "^0.1.0",
+    "dev-dep-web": "^0.1.0",
+    "dr-js": "^0.12.1",
     "webpack-bundle-analyzer": "^2.11.1"
   }
 }
