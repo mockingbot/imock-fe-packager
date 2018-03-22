@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "imock-fe-packager",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "author": "mockingbot",
   "license": "MIT",
   "description": "Upload/Download directory to/from AWS-S3/TenCent-Cloud.",
