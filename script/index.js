@@ -17,13 +17,16 @@ const execOptionOutput = { cwd: fromOutput(), stdio: argvFlag('quiet') ? [ 'igno
 
 runMain(async (logger) => {
   const packageJSON = await initOutput({ fromRoot, fromOutput, logger })
+
+  logger.padLog(`generate spec`)
+  execSync('yarn script-generate-spec', execOptionRoot)
   if (!argvFlag('pack')) return
 
   logger.padLog(`copy bin`)
   await modify.copy(fromRoot('source-bin/index.js'), fromOutput('bin/index.js'))
 
   logger.padLog(`build library`)
-  execSync('npm run build-library', execOptionRoot)
+  execSync('yarn build-library', execOptionRoot)
 
   logger.padLog('verify output bin working')
   const outputBinTest = execSync('node bin --version', { ...execOptionOutput, stdio: 'pipe' }).toString()

@@ -6,6 +6,7 @@ const { SingleString, SingleInteger, OneOfString, BooleanFlag, Config } = Config
 
 const OPTION_CONFIG = {
   prefixENV: 'packager',
+  prefixJSON: 'packager',
   formatList: [
     Config,
     { ...BooleanFlag, name: 'help', shortName: 'h' },
