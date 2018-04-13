@@ -22,6 +22,7 @@ const runMode = async (mode, { getOptionOptional, getSingleOption, getSingleOpti
     bucket: getSingleOption('tc-bucket')
   } : {}
 
+  console.log(`[Bucket] ${isServiceAws ? 'AWS' : 'TC'}: ${bucket} (${region})`)
   const bucketService = isServiceAws ? await connectAwsBucket({
     accessKeyId: getSingleOption('aws-access-key-id'),
     secretAccessKey: getSingleOption('aws-secret-access-key'),
