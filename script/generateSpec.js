@@ -12,7 +12,7 @@ const PATH_ROOT = resolve(__dirname, '..')
 const fromRoot = (...args) => resolve(PATH_ROOT, ...args)
 
 const renderMarkdownBinOptionFormat = () => [
-  renderMarkdownFileLink('source-bin/option.js'),
+  renderMarkdownFileLink('source/option.js'),
   '> ```',
   stringIndentLine(formatUsage(), '> '),
   '> ```'

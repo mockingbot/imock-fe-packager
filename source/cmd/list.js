@@ -1,4 +1,4 @@
-import { binary as formatBinary, stringIndentLine, padTable } from 'dr-js/module/common/format'
+import { binary, stringIndentLine, padTable } from 'dr-js/module/common/format'
 
 const doList = async (bucketService, { listKeyPrefix = '' }) => {
   const { bufferList } = await bucketService.getBufferList(listKeyPrefix)
@@ -8,7 +8,7 @@ const doList = async (bucketService, { listKeyPrefix = '' }) => {
     table: [
       [ 'LastModifiedDate', 'Size', 'Key', 'ETag' ],
       ...bufferList.map(({ lastModifiedDate, size, key, eTag }) => [
-        lastModifiedDate.toISOString(), `${formatBinary(size)}B`, key, eTag
+        lastModifiedDate.toISOString(), `${binary(size)}B`, key, eTag
       ])
     ],
     padFuncList: [ 'L', 'R', 'L', 'L' ],

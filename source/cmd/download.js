@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 import { unlinkSync, readFileSync, writeFileSync } from 'fs'
-import { binary as formatBinary, stringIndentLine } from 'dr-js/module/common/format'
+import { binary, stringIndentLine } from 'dr-js/module/common/format'
 import { FILE_TYPE, getPathType } from 'dr-js/module/node/file/File'
 import { doTarExtract, checkPackageHash } from './__utils__'
 
@@ -8,7 +8,7 @@ const doDownload = async (bucketService, { nameFileTarGz, pathUnpack }) => {
   let buffer = null
   try {
     const { buffer: remoteBuffer } = await bucketService.getBuffer(nameFileTarGz)
-    console.log(`[Download] downloaded '${nameFileTarGz}', size: ${formatBinary(remoteBuffer.length)}B`)
+    console.log(`[Download] downloaded '${nameFileTarGz}', size: ${binary(remoteBuffer.length)}B`)
     buffer = remoteBuffer
   } catch (error) {
     console.warn(error)
@@ -29,7 +29,7 @@ const doDownloadFile = async (bucketService, { pathFile, keyFile }) => {
   let buffer = null
   try {
     const { buffer: remoteBuffer } = await bucketService.getBuffer(keyFile)
-    console.log(`[Download] downloaded '${keyFile}', size: ${formatBinary(remoteBuffer.length)}B`)
+    console.log(`[Download] downloaded '${keyFile}', size: ${binary(remoteBuffer.length)}B`)
     buffer = remoteBuffer
   } catch (error) {
     console.warn(error)

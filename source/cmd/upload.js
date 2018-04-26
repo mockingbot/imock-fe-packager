@@ -1,7 +1,7 @@
 import { resolve } from 'path'
 import { unlinkSync, readFileSync, writeFileSync } from 'fs'
 import { ACCESS_TYPE } from 'bucket-sdk'
-import { binary as formatBinary } from 'dr-js/module/common/format'
+import { binary } from 'dr-js/module/common/format'
 import { doTarCompress, collectPackageHash } from './__utils__'
 
 const doUpload = async (bucketService, { pathPack, nameFileTarGz, nameFileLatestTarGz, packageInfoString, uploadPublicReadAccess }) => {
@@ -11,7 +11,7 @@ const doUpload = async (bucketService, { pathPack, nameFileTarGz, nameFileLatest
   console.log(`[Upload] collected package hash`)
   await doTarCompress(pathPack, nameFileTarGz)
   const buffer = readFileSync(nameFileTarGz)
-  console.log(`[Upload] packed from '${pathPack}', size: ${formatBinary(buffer.length)}B`)
+  console.log(`[Upload] packed from '${pathPack}', size: ${binary(buffer.length)}B`)
   const bufferInfo = await bucketService.putBuffer(nameFileTarGz, buffer, uploadPublicReadAccess ? ACCESS_TYPE.PUBLIC_READ : ACCESS_TYPE.PRIVATE)
   await bucketService.copyBuffer(nameFileLatestTarGz, bufferInfo, uploadPublicReadAccess ? ACCESS_TYPE.PUBLIC_READ : ACCESS_TYPE.PRIVATE)
   unlinkSync(nameFileTarGz)
@@ -20,7 +20,7 @@ const doUpload = async (bucketService, { pathPack, nameFileTarGz, nameFileLatest
 
 const doUploadFile = async (bucketService, { pathFile, keyFile, uploadPublicReadAccess }) => {
   const buffer = readFileSync(pathFile)
-  console.log(`[Upload] packed from '${pathFile}', size: ${formatBinary(buffer.length)}B`)
+  console.log(`[Upload] packed from '${pathFile}', size: ${binary(buffer.length)}B`)
   const bufferInfo = await bucketService.putBuffer(keyFile, buffer, uploadPublicReadAccess ? ACCESS_TYPE.PUBLIC_READ : ACCESS_TYPE.PRIVATE)
   console.log(`[Upload] uploaded '${keyFile}'(${bufferInfo.eTag})`)
   return bufferInfo

@@ -3,7 +3,7 @@
 * [Bin Option Format](#bin-option-format)
 
 #### Bin Option Format
-📄 [source-bin/option.js](source-bin/option.js)
+📄 [source/option.js](source/option.js)
 > ```
 > CLI Usage:
 >   --config -c [OPTIONAL] [ARGUMENT=1]
