@@ -11,8 +11,7 @@ const doList = async (bucketService, { listKeyPrefix = '' }) => {
         lastModifiedDate.toISOString(), `${binary(size)}B`, key, eTag
       ])
     ],
-    padFuncList: [ 'L', 'R', 'L', 'L' ],
-    cellPad: ' | '
+    padFuncList: [ 'L', 'R', 'L', 'L' ]
   }), '  ')}`)
 }
 

@@ -4,7 +4,7 @@ const isRawModule = BABEL_ENV.includes('module')
 
 module.exports = {
   presets: [
-    [ '@babel/env', { targets: { node: 8 }, modules: isRawModule ? false : 'commonjs' } ]
+    [ '@babel/env', { targets: { node: '8.8' }, modules: isRawModule ? false : 'commonjs' } ]
   ],
   plugins: [
     [ '@babel/proposal-class-properties' ],
