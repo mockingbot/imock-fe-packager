@@ -6,7 +6,7 @@ const { SingleString, SingleInteger, OneOfString, BooleanFlag, Config } = Config
 
 const OPTION_CONFIG = {
   prefixENV: 'packager',
-  // prefixJSON: 'packager', // 0.3.0
+  // prefixJSON: 'packager', // TODO: 0.3.0
   formatList: [
     Config,
     { ...BooleanFlag, name: 'help', shortName: 'h' },
@@ -36,8 +36,19 @@ const OPTION_CONFIG = {
           extendFormatList: [
             { ...SingleString, name: 'aws-access-key-id' },
             { ...SingleString, name: 'aws-secret-access-key' },
-            { ...SingleString, name: 'aws-region', description: `S3 region name, sample: 'cn-north-1'` },
-            { ...SingleString, name: 'aws-s3-bucket', description: `S3 bucket name` }
+            { ...SingleString, name: 'aws-region', description: `region name, sample: 'cn-north-1'` },
+            { ...SingleString, name: 'aws-s3-bucket', description: `bucket name` } // TODO: 0.3.0 remove s3
+          ]
+        },
+        {
+          ...BooleanFlag,
+          name: 'service-oss',
+          shortName: 'o',
+          extendFormatList: [
+            { ...SingleString, name: 'oss-access-key-id' },
+            { ...SingleString, name: 'oss-access-key-secret' },
+            { ...SingleString, name: 'oss-region', description: `region name, sample: 'oss-cn-hongkong'` },
+            { ...SingleString, name: 'oss-bucket', description: `bucket name` }
           ]
         },
         {

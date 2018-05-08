@@ -38,9 +38,17 @@
 >       --aws-access-key-id [OPTIONAL-CHECK] [ARGUMENT=1]
 >       --aws-secret-access-key [OPTIONAL-CHECK] [ARGUMENT=1]
 >       --aws-region [OPTIONAL-CHECK] [ARGUMENT=1]
->           S3 region name, sample: 'cn-north-1'
+>           region name, sample: 'cn-north-1'
 >       --aws-s3-bucket [OPTIONAL-CHECK] [ARGUMENT=1]
->           S3 bucket name
+>           bucket name
+>     --service-oss -o [OPTIONAL-CHECK]
+>         set to enable
+>       --oss-access-key-id [OPTIONAL-CHECK] [ARGUMENT=1]
+>       --oss-access-key-secret [OPTIONAL-CHECK] [ARGUMENT=1]
+>       --oss-region [OPTIONAL-CHECK] [ARGUMENT=1]
+>           region name, sample: 'oss-cn-hongkong'
+>       --oss-bucket [OPTIONAL-CHECK] [ARGUMENT=1]
+>           bucket name
 >     --service-tc -t [OPTIONAL-CHECK]
 >         set to enable
 >       --tc-app-id [OPTIONAL-CHECK] [ARGUMENT=1]
@@ -75,6 +83,11 @@
 >     export PACKAGER_AWS_SECRET_ACCESS_KEY="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_AWS_REGION="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_AWS_S3_BUCKET="[OPTIONAL-CHECK] [ARGUMENT=1]"
+>     export PACKAGER_SERVICE_OSS="[OPTIONAL-CHECK]"
+>     export PACKAGER_OSS_ACCESS_KEY_ID="[OPTIONAL-CHECK] [ARGUMENT=1]"
+>     export PACKAGER_OSS_ACCESS_KEY_SECRET="[OPTIONAL-CHECK] [ARGUMENT=1]"
+>     export PACKAGER_OSS_REGION="[OPTIONAL-CHECK] [ARGUMENT=1]"
+>     export PACKAGER_OSS_BUCKET="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_SERVICE_TC="[OPTIONAL-CHECK]"
 >     export PACKAGER_TC_APP_ID="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_TC_SECRET_ID="[OPTIONAL-CHECK] [ARGUMENT=1]"
@@ -102,6 +115,11 @@
 >     "awsSecretAccessKey": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "awsRegion": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "awsS3Bucket": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
+>     "serviceOss": [ "[OPTIONAL-CHECK]" ],
+>     "ossAccessKeyId": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
+>     "ossAccessKeySecret": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
+>     "ossRegion": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
+>     "ossBucket": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "serviceTc": [ "[OPTIONAL-CHECK]" ],
 >     "tcAppId": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "tcSecretId": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],

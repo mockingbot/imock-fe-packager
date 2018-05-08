@@ -1,4 +1,4 @@
-import { connectAwsBucket, connectTcBucket } from 'bucket-sdk'
+import { connectAwsBucket, connectOssBucket, connectTcBucket } from 'bucket-sdk'
 import { parseOption, formatUsage } from './option'
 import { getGitBranch, getGitCommitHash } from './cmd/__utils__'
 import { doList } from './cmd/list'
@@ -11,21 +11,24 @@ const formatFilename = (filename = '') => filename.replace(/[/:;*%?]/g, '_')
 
 const runMode = async (mode, { getOptionOptional, getSingleOption, getSingleOptionOptional }) => {
   const isServiceAws = Boolean(getOptionOptional('service-aws'))
+  const isServiceOss = Boolean(getOptionOptional('service-oss'))
   const isServiceTc = Boolean(getOptionOptional('service-tc'))
-  if (!isServiceAws && !isServiceTc) throw new Error('service not specified')
+  if (!isServiceAws && !isServiceOss && !isServiceTc) throw new Error('service not specified')
 
-  const { region, bucket } = isServiceAws ? {
-    region: getSingleOption('aws-region'),
-    bucket: getSingleOption('aws-s3-bucket')
-  } : isServiceTc ? {
-    region: getSingleOption('tc-region'),
-    bucket: getSingleOption('tc-bucket')
-  } : {}
+  const { region, bucket } = isServiceAws ? { region: getSingleOption('aws-region'), bucket: getSingleOption('aws-s3-bucket') }
+    : isServiceOss ? { region: getSingleOption('oss-region'), bucket: getSingleOption('oss-bucket') }
+      : isServiceTc ? { region: getSingleOption('tc-region'), bucket: getSingleOption('tc-bucket') }
+        : {}
 
-  console.log(`[Bucket] ${isServiceAws ? 'AWS' : 'TC'}: ${bucket} (${region})`)
+  console.log(`[Bucket] ${isServiceAws ? 'AWS' : isServiceOss ? 'OSS' : 'TC'}: ${bucket} (${region})`)
   const bucketService = isServiceAws ? await connectAwsBucket({
     accessKeyId: getSingleOption('aws-access-key-id'),
     secretAccessKey: getSingleOption('aws-secret-access-key'),
+    region,
+    bucket
+  }) : isServiceOss ? await connectOssBucket({
+    accessKeyId: getSingleOption('oss-access-key-id'),
+    accessKeySecret: getSingleOption('oss-access-key-secret'),
     region,
     bucket
   }) : isServiceTc ? await connectTcBucket({
