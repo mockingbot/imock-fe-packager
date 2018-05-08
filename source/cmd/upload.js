@@ -4,25 +4,25 @@ import { ACCESS_TYPE } from 'bucket-sdk'
 import { binary } from 'dr-js/module/common/format'
 import { doTarCompress, collectPackageHash } from './__utils__'
 
-const doUpload = async (bucketService, { pathPack, nameFileTarGz, nameFileLatestTarGz, packageInfoString, uploadPublicReadAccess }) => {
+const doUpload = async (bucketService, { pathPack, nameFileTarGz, nameFileLatestTarGz, packageInfoString, uploadPublicReadAccess }, log) => {
   writeFileSync(resolve(pathPack, 'PACKAGE_INFO'), packageInfoString)
-  console.log(`[Upload] collected package info`)
+  log(`[Upload] collected package info`)
   writeFileSync(resolve(pathPack, 'PACKAGE_HASH'), JSON.stringify(await collectPackageHash(pathPack)))
-  console.log(`[Upload] collected package hash`)
+  log(`[Upload] collected package hash`)
   await doTarCompress(pathPack, nameFileTarGz)
   const buffer = readFileSync(nameFileTarGz)
-  console.log(`[Upload] packed from '${pathPack}', size: ${binary(buffer.length)}B`)
+  log(`[Upload] packed from '${pathPack}', size: ${binary(buffer.length)}B`)
   const bufferInfo = await bucketService.putBuffer(nameFileTarGz, buffer, uploadPublicReadAccess ? ACCESS_TYPE.PUBLIC_READ : ACCESS_TYPE.PRIVATE)
   await bucketService.copyBuffer(nameFileLatestTarGz, bufferInfo, uploadPublicReadAccess ? ACCESS_TYPE.PUBLIC_READ : ACCESS_TYPE.PRIVATE)
   unlinkSync(nameFileTarGz)
-  console.log(`[Upload] uploaded '${nameFileTarGz}' and '${nameFileLatestTarGz}'`)
+  log(`[Upload] uploaded '${nameFileTarGz}' and '${nameFileLatestTarGz}'`)
 }
 
-const doUploadFile = async (bucketService, { pathFile, keyFile, uploadPublicReadAccess }) => {
+const doUploadFile = async (bucketService, { pathFile, keyFile, uploadPublicReadAccess }, log) => {
   const buffer = readFileSync(pathFile)
-  console.log(`[Upload] packed from '${pathFile}', size: ${binary(buffer.length)}B`)
+  log(`[Upload] packed from '${pathFile}', size: ${binary(buffer.length)}B`)
   const bufferInfo = await bucketService.putBuffer(keyFile, buffer, uploadPublicReadAccess ? ACCESS_TYPE.PUBLIC_READ : ACCESS_TYPE.PRIVATE)
-  console.log(`[Upload] uploaded '${keyFile}'(${bufferInfo.eTag})`)
+  log(`[Upload] uploaded '${keyFile}'(${bufferInfo.eTag})`)
   return bufferInfo
 }
 

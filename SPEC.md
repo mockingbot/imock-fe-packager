@@ -13,6 +13,8 @@
 >       set to enable
 >   --version -v [OPTIONAL]
 >       set to enable
+>   --quiet -q [OPTIONAL]
+>       reduce most output
 >   --mode -m [OPTIONAL] [ARGUMENT=1]
 >       one of:
 >         list upload
@@ -70,6 +72,7 @@
 >     export PACKAGER_CONFIG="[OPTIONAL] [ARGUMENT=1]"
 >     export PACKAGER_HELP="[OPTIONAL]"
 >     export PACKAGER_VERSION="[OPTIONAL]"
+>     export PACKAGER_QUIET="[OPTIONAL]"
 >     export PACKAGER_MODE="[OPTIONAL] [ARGUMENT=1]"
 >     export PACKAGER_PATH_PACK="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_PATH_UNPACK="[OPTIONAL-CHECK] [ARGUMENT=1]"
@@ -102,6 +105,7 @@
 >     "config": [ "[OPTIONAL] [ARGUMENT=1]" ],
 >     "help": [ "[OPTIONAL]" ],
 >     "version": [ "[OPTIONAL]" ],
+>     "quiet": [ "[OPTIONAL]" ],
 >     "mode": [ "[OPTIONAL] [ARGUMENT=1]" ],
 >     "pathPack": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "pathUnpack": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],

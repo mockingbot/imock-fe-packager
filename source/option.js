@@ -11,6 +11,7 @@ const OPTION_CONFIG = {
     Config,
     { ...BooleanFlag, name: 'help', shortName: 'h' },
     { ...BooleanFlag, name: 'version', shortName: 'v' },
+    { ...BooleanFlag, name: 'quiet', shortName: 'q', description: `reduce most output` },
     {
       ...OneOfString([
         'list',
