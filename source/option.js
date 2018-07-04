@@ -1,12 +1,10 @@
-import { createOptionParser } from 'dr-js/module/common/module/Option/Parser'
-import { ConfigPreset, getOptionalFormatValue } from 'dr-js/module/common/module/Option/Preset'
-import { parseOptionMap, createOptionGetter } from 'dr-js/module/node/module/Option'
+import { getOptionalFormatValue } from 'dr-js/module/common/module/Option/preset'
+import { ConfigPresetNode, prepareOption } from 'dr-js/module/node/module/Option'
 
-const { SingleString, SingleInteger, OneOfString, BooleanFlag, Config } = ConfigPreset
+const { SingleString, SingleInteger, OneOfString, SinglePath, BooleanFlag, Config } = ConfigPresetNode
 
 const OPTION_CONFIG = {
   prefixENV: 'packager',
-  // prefixJSON: 'packager', // TODO: 0.3.0
   formatList: [
     Config,
     { ...BooleanFlag, name: 'help', shortName: 'h' },
@@ -23,9 +21,9 @@ const OPTION_CONFIG = {
       name: 'mode',
       shortName: 'm',
       extendFormatList: [
-        { ...SingleString, isPath: true, optional: getOptionalFormatValue('mode', 'upload'), name: 'path-pack', shortName: 'p', description: `required for 'upload'` },
-        { ...SingleString, isPath: true, optional: getOptionalFormatValue('mode', 'download'), name: 'path-unpack', shortName: 'u', description: `required for 'download'` },
-        { ...SingleString, isPath: true, optional: getOptionalFormatValue('mode', 'upload-file', 'download-file'), name: 'path-file', shortName: 'P', description: `required for 'upload-file' or 'download-file'` },
+        { ...SinglePath, optional: getOptionalFormatValue('mode', 'upload'), name: 'path-pack', shortName: 'p', description: `required for 'upload'` },
+        { ...SinglePath, optional: getOptionalFormatValue('mode', 'download'), name: 'path-unpack', shortName: 'u', description: `required for 'download'` },
+        { ...SinglePath, optional: getOptionalFormatValue('mode', 'upload-file', 'download-file'), name: 'path-file', shortName: 'P', description: `required for 'upload-file' or 'download-file'` },
         { ...SingleString, optional: getOptionalFormatValue('mode', 'upload-file', 'download-file', 'delete-file'), name: 'key-file', shortName: 'K', description: `required for 'upload-file' or 'download-file' or 'delete-file'` },
         { ...SingleString, optional: true, name: 'list-key-prefix', description: `for 'list'` },
         { ...BooleanFlag, name: 'upload-public-read-access', description: `for 'upload', 'upload-list', default: 'false'` },
@@ -38,7 +36,7 @@ const OPTION_CONFIG = {
             { ...SingleString, name: 'aws-access-key-id' },
             { ...SingleString, name: 'aws-secret-access-key' },
             { ...SingleString, name: 'aws-region', description: `region name, sample: 'cn-north-1'` },
-            { ...SingleString, name: 'aws-s3-bucket', description: `bucket name` } // TODO: 0.3.0 remove s3
+            { ...SingleString, name: 'aws-s3-bucket', aliasNameList: [ 'aws-bucket' ], description: `bucket name` } // TODO: 0.3.0 remove `aws-s3-bucket`
           ]
         },
         {
@@ -71,8 +69,6 @@ const OPTION_CONFIG = {
   ]
 }
 
-const { parseCLI, parseENV, parseJSON, processOptionMap, formatUsage } = createOptionParser(OPTION_CONFIG)
-
-const parseOption = async () => createOptionGetter(await parseOptionMap({ parseCLI, parseENV, parseJSON, processOptionMap }))
+const { parseOption, formatUsage } = prepareOption(OPTION_CONFIG)
 
 export { parseOption, formatUsage }

@@ -9,18 +9,16 @@
 >   --config -c [OPTIONAL] [ARGUMENT=1]
 >       # from JSON: set to 'path/to/config.json'
 >       # from ENV: set to 'env'
->   --help -h [OPTIONAL]
+>   --help -h [OPTIONAL] [ARGUMENT=0+]
 >       set to enable
->   --version -v [OPTIONAL]
+>   --version -v [OPTIONAL] [ARGUMENT=0+]
 >       set to enable
->   --quiet -q [OPTIONAL]
+>   --quiet -q [OPTIONAL] [ARGUMENT=0+]
 >       reduce most output
 >   --mode -m [OPTIONAL] [ARGUMENT=1]
 >       one of:
->         list upload
->         upload-file download
->         download-file delete-outdated
->         delete-file
+>         list upload upload-file download
+>         download-file delete-outdated delete-file
 >     --path-pack -p [OPTIONAL-CHECK] [ARGUMENT=1]
 >         required for 'upload'
 >     --path-unpack -u [OPTIONAL-CHECK] [ARGUMENT=1]
@@ -31,19 +29,19 @@
 >         required for 'upload-file' or 'download-file' or 'delete-file'
 >     --list-key-prefix [OPTIONAL-CHECK] [ARGUMENT=1]
 >         for 'list'
->     --upload-public-read-access [OPTIONAL-CHECK]
+>     --upload-public-read-access [OPTIONAL-CHECK] [ARGUMENT=0+]
 >         for 'upload', 'upload-list', default: 'false'
 >     --delete-outdated-time [OPTIONAL-CHECK] [ARGUMENT=1]
 >         in seconds, for 'delete-outdated', default: '2592000' (30 day)
->     --service-aws -a [OPTIONAL-CHECK]
+>     --service-aws -a [OPTIONAL-CHECK] [ARGUMENT=0+]
 >         set to enable
 >       --aws-access-key-id [OPTIONAL-CHECK] [ARGUMENT=1]
 >       --aws-secret-access-key [OPTIONAL-CHECK] [ARGUMENT=1]
 >       --aws-region [OPTIONAL-CHECK] [ARGUMENT=1]
 >           region name, sample: 'cn-north-1'
->       --aws-s3-bucket [OPTIONAL-CHECK] [ARGUMENT=1]
+>       --aws-s3-bucket --aws-bucket [OPTIONAL-CHECK] [ARGUMENT=1]
 >           bucket name
->     --service-oss -o [OPTIONAL-CHECK]
+>     --service-oss -o [OPTIONAL-CHECK] [ARGUMENT=0+]
 >         set to enable
 >       --oss-access-key-id [OPTIONAL-CHECK] [ARGUMENT=1]
 >       --oss-access-key-secret [OPTIONAL-CHECK] [ARGUMENT=1]
@@ -51,7 +49,7 @@
 >           region name, sample: 'oss-cn-hongkong'
 >       --oss-bucket [OPTIONAL-CHECK] [ARGUMENT=1]
 >           bucket name
->     --service-tc -t [OPTIONAL-CHECK]
+>     --service-tc -t [OPTIONAL-CHECK] [ARGUMENT=0+]
 >         set to enable
 >       --tc-app-id [OPTIONAL-CHECK] [ARGUMENT=1]
 >       --tc-secret-id [OPTIONAL-CHECK] [ARGUMENT=1]
@@ -70,28 +68,28 @@
 >   "
 >     #!/usr/bin/env bash
 >     export PACKAGER_CONFIG="[OPTIONAL] [ARGUMENT=1]"
->     export PACKAGER_HELP="[OPTIONAL]"
->     export PACKAGER_VERSION="[OPTIONAL]"
->     export PACKAGER_QUIET="[OPTIONAL]"
+>     export PACKAGER_HELP="[OPTIONAL] [ARGUMENT=0+]"
+>     export PACKAGER_VERSION="[OPTIONAL] [ARGUMENT=0+]"
+>     export PACKAGER_QUIET="[OPTIONAL] [ARGUMENT=0+]"
 >     export PACKAGER_MODE="[OPTIONAL] [ARGUMENT=1]"
 >     export PACKAGER_PATH_PACK="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_PATH_UNPACK="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_PATH_FILE="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_KEY_FILE="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_LIST_KEY_PREFIX="[OPTIONAL-CHECK] [ARGUMENT=1]"
->     export PACKAGER_UPLOAD_PUBLIC_READ_ACCESS="[OPTIONAL-CHECK]"
+>     export PACKAGER_UPLOAD_PUBLIC_READ_ACCESS="[OPTIONAL-CHECK] [ARGUMENT=0+]"
 >     export PACKAGER_DELETE_OUTDATED_TIME="[OPTIONAL-CHECK] [ARGUMENT=1]"
->     export PACKAGER_SERVICE_AWS="[OPTIONAL-CHECK]"
+>     export PACKAGER_SERVICE_AWS="[OPTIONAL-CHECK] [ARGUMENT=0+]"
 >     export PACKAGER_AWS_ACCESS_KEY_ID="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_AWS_SECRET_ACCESS_KEY="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_AWS_REGION="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_AWS_S3_BUCKET="[OPTIONAL-CHECK] [ARGUMENT=1]"
->     export PACKAGER_SERVICE_OSS="[OPTIONAL-CHECK]"
+>     export PACKAGER_SERVICE_OSS="[OPTIONAL-CHECK] [ARGUMENT=0+]"
 >     export PACKAGER_OSS_ACCESS_KEY_ID="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_OSS_ACCESS_KEY_SECRET="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_OSS_REGION="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_OSS_BUCKET="[OPTIONAL-CHECK] [ARGUMENT=1]"
->     export PACKAGER_SERVICE_TC="[OPTIONAL-CHECK]"
+>     export PACKAGER_SERVICE_TC="[OPTIONAL-CHECK] [ARGUMENT=0+]"
 >     export PACKAGER_TC_APP_ID="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_TC_SECRET_ID="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_TC_SECRET_KEY="[OPTIONAL-CHECK] [ARGUMENT=1]"
@@ -103,28 +101,28 @@
 > JSON Usage:
 >   {
 >     "config": [ "[OPTIONAL] [ARGUMENT=1]" ],
->     "help": [ "[OPTIONAL]" ],
->     "version": [ "[OPTIONAL]" ],
->     "quiet": [ "[OPTIONAL]" ],
+>     "help": [ "[OPTIONAL] [ARGUMENT=0+]" ],
+>     "version": [ "[OPTIONAL] [ARGUMENT=0+]" ],
+>     "quiet": [ "[OPTIONAL] [ARGUMENT=0+]" ],
 >     "mode": [ "[OPTIONAL] [ARGUMENT=1]" ],
 >     "pathPack": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "pathUnpack": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "pathFile": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "keyFile": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "listKeyPrefix": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
->     "uploadPublicReadAccess": [ "[OPTIONAL-CHECK]" ],
+>     "uploadPublicReadAccess": [ "[OPTIONAL-CHECK] [ARGUMENT=0+]" ],
 >     "deleteOutdatedTime": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
->     "serviceAws": [ "[OPTIONAL-CHECK]" ],
+>     "serviceAws": [ "[OPTIONAL-CHECK] [ARGUMENT=0+]" ],
 >     "awsAccessKeyId": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "awsSecretAccessKey": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "awsRegion": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "awsS3Bucket": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
->     "serviceOss": [ "[OPTIONAL-CHECK]" ],
+>     "serviceOss": [ "[OPTIONAL-CHECK] [ARGUMENT=0+]" ],
 >     "ossAccessKeyId": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "ossAccessKeySecret": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "ossRegion": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "ossBucket": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
->     "serviceTc": [ "[OPTIONAL-CHECK]" ],
+>     "serviceTc": [ "[OPTIONAL-CHECK] [ARGUMENT=0+]" ],
 >     "tcAppId": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "tcSecretId": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "tcSecretKey": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
