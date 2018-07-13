@@ -1,7 +1,7 @@
 import { resolve } from 'path'
 import { unlinkSync, readFileSync, writeFileSync } from 'fs'
 import { binary, stringIndentLine } from 'dr-js/module/common/format'
-import { FILE_TYPE, getPathType } from 'dr-js/module/node/file/File'
+import { readableAsync } from 'dr-js/module/node/file/function'
 import { doTarExtract, checkPackageHash } from './__utils__'
 
 const doDownload = async (bucketService, { nameFileTarGz, pathUnpack }, log) => {
@@ -18,7 +18,7 @@ const doDownload = async (bucketService, { nameFileTarGz, pathUnpack }, log) => 
   await doTarExtract(nameFileTarGz, pathUnpack)
   unlinkSync(nameFileTarGz)
   log(`[Download] unpacked package to '${pathUnpack}'`)
-  if (await getPathType(resolve(pathUnpack, 'PACKAGE_HASH')) === FILE_TYPE.File) {
+  if (await readableAsync(resolve(pathUnpack, 'PACKAGE_HASH'))) {
     await checkPackageHash(pathUnpack, JSON.parse(readFileSync(resolve(pathUnpack, 'PACKAGE_HASH'))))
     log(`[Download] checked package hash`)
   } else console.warn(`[WARNING][Download] skipped hash check`)

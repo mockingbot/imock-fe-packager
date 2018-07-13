@@ -62,6 +62,19 @@ const OPTION_CONFIG = {
             { ...SingleString, name: 'tc-bucket', description: `bucket name` }
           ]
         },
+        {
+          ...BooleanFlag,
+          name: 'service-custom',
+          shortName: 'C',
+          description: `custom server for file upload/download/delete, no list`,
+          extendFormatList: [
+            { ...SinglePath, name: 'custom-auth-config' },
+            { ...SingleString, name: 'custom-modify-url' },
+            { ...SingleString, name: 'custom-upload-url' },
+            { ...SingleString, name: 'custom-download-url' },
+            { ...SingleString, name: 'custom-bucket', description: `bucket name` }
+          ]
+        },
         { ...SingleString, optional: true, name: 'git-branch', shortName: 'B', description: `git branch name like 'master'\ndefault use 'git symbolic-ref --short HEAD'` },
         { ...SingleString, optional: true, name: 'git-commit-hash', shortName: 'H', description: `git commit hash like 'a1b2c3d4', or 'latest' for 'download'\ndefault use 'git log -1 --format="%H"'` }
       ]

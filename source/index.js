@@ -1,13 +1,15 @@
 import { connectAwsBucket, connectOssBucket, connectTcBucket } from 'bucket-sdk'
 import { clock } from 'dr-js/module/common/time'
 import { time as formatTime } from 'dr-js/module/common/format'
+
+import { name as packageName, version as packageVersion } from '../package.json'
 import { parseOption, formatUsage } from './option'
 import { getGitBranch, getGitCommitHash } from './cmd/__utils__'
 import { doList } from './cmd/list'
 import { doUpload, doUploadFile } from './cmd/upload'
 import { doDownload, doDownloadFile } from './cmd/download'
 import { doDeleteOutdated, doDeleteFile } from './cmd/delete'
-import { name as packageName, version as packageVersion } from '../package.json'
+import { connectCustomBucket } from './customBucketService'
 
 const formatFilename = (filename = '') => filename.replace(/[/:;*%?]/g, '_')
 
@@ -15,14 +17,18 @@ const runMode = async (mode, { getOptionOptional, getSingleOption, getSingleOpti
   const isServiceAws = Boolean(getOptionOptional('service-aws'))
   const isServiceOss = Boolean(getOptionOptional('service-oss'))
   const isServiceTc = Boolean(getOptionOptional('service-tc'))
-  if (!isServiceAws && !isServiceOss && !isServiceTc) throw new Error('service not specified')
+  const isServiceCustom = Boolean(getOptionOptional('service-custom'))
+  if (!isServiceAws && !isServiceOss && !isServiceTc && !isServiceCustom) throw new Error('service not specified')
 
   const { region, bucket } = isServiceAws ? { region: getSingleOption('aws-region'), bucket: getSingleOption('aws-s3-bucket') }
     : isServiceOss ? { region: getSingleOption('oss-region'), bucket: getSingleOption('oss-bucket') }
       : isServiceTc ? { region: getSingleOption('tc-region'), bucket: getSingleOption('tc-bucket') }
-        : {}
+        : isServiceCustom ? { region: 'CUSTOM', bucket: getSingleOption('custom-bucket') }
+          : {}
 
-  log(`[Bucket] ${isServiceAws ? 'AWS' : isServiceOss ? 'OSS' : 'TC'}: ${bucket} (${region})`)
+  isServiceCustom
+    ? log(`[Bucket] CUSTOM: ${bucket} (${getSingleOption('custom-upload-url')})`)
+    : log(`[Bucket] ${isServiceAws ? 'AWS' : isServiceOss ? 'OSS' : 'TC'}: ${bucket} (${region})`)
 
   const bucketService = isServiceAws ? await connectAwsBucket({
     accessKeyId: getSingleOption('aws-access-key-id'),
@@ -39,6 +45,12 @@ const runMode = async (mode, { getOptionOptional, getSingleOption, getSingleOpti
     secretId: getSingleOption('tc-secret-id'),
     secretKey: getSingleOption('tc-secret-key'),
     region,
+    bucket
+  }) : isServiceCustom ? await connectCustomBucket({
+    fileAuthConfig: getSingleOption('custom-auth-config'),
+    urlFileModify: getSingleOption('custom-modify-url'),
+    urlFileUpload: getSingleOption('custom-upload-url'),
+    urlFileDownload: getSingleOption('custom-download-url'),
     bucket
   }) : null
 
