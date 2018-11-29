@@ -51,6 +51,7 @@ const runMode = async (mode, { getOptionOptional, getSingleOption, getSingleOpti
     urlPathAction: getSingleOption('custom-path-action-url'),
     urlFileUpload: getSingleOption('custom-file-upload-url'),
     urlFileDownload: getSingleOption('custom-file-download-url'),
+    timeout: getSingleOptionOptional('custom-fetch-timeout') || 30 * 1000,
     bucket
   }) : null
 

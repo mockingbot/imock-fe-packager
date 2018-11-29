@@ -64,6 +64,8 @@
 >       --custom-path-action-url [OPTIONAL-CHECK] [ARGUMENT=1]
 >       --custom-file-upload-url [OPTIONAL-CHECK] [ARGUMENT=1]
 >       --custom-file-download-url [OPTIONAL-CHECK] [ARGUMENT=1]
+>       --custom-fetch-timeout [OPTIONAL-CHECK] [ARGUMENT=1]
+>           in msec, default 30sec
 >       --custom-bucket [OPTIONAL-CHECK] [ARGUMENT=1]
 >           bucket name
 >     --git-branch -B [OPTIONAL-CHECK] [ARGUMENT=1]
@@ -108,6 +110,7 @@
 >     export PACKAGER_CUSTOM_PATH_ACTION_URL="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_CUSTOM_FILE_UPLOAD_URL="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_CUSTOM_FILE_DOWNLOAD_URL="[OPTIONAL-CHECK] [ARGUMENT=1]"
+>     export PACKAGER_CUSTOM_FETCH_TIMEOUT="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_CUSTOM_BUCKET="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_GIT_BRANCH="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_GIT_COMMIT_HASH="[OPTIONAL-CHECK] [ARGUMENT=1]"
@@ -147,6 +150,7 @@
 >     "customPathActionUrl": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "customFileUploadUrl": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "customFileDownloadUrl": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
+>     "customFetchTimeout": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "customBucket": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "gitBranch": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "gitCommitHash": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],

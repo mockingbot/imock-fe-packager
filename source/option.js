@@ -72,6 +72,7 @@ const OPTION_CONFIG = {
             { ...SingleString, name: 'custom-path-action-url' },
             { ...SingleString, name: 'custom-file-upload-url' },
             { ...SingleString, name: 'custom-file-download-url' },
+            { ...SingleInteger, optional: true, name: 'custom-fetch-timeout', description: 'in msec, default 30sec' },
             { ...SingleString, name: 'custom-bucket', description: `bucket name` }
           ]
         },

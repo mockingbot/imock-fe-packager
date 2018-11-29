@@ -1,10 +1,10 @@
 {
   "private": true,
   "name": "imock-fe-packager",
-  "version": "3.0.0-dev.0",
+  "version": "3.0.0-dev.1",
+  "description": "Upload/Download directory to/from AWS-S3/Ali-OSS/TenCent-Cloud.",
   "author": "mockingbot",
   "license": "MIT",
-  "description": "Upload/Download directory to/from AWS-S3/Ali-OSS/TenCent-Cloud.",
   "repository": "github:mockingbot/imock-fe-packager",
   "bin": "bin/index.js",
   "scripts": {
@@ -29,9 +29,9 @@
   },
   "devDependencies": {
     "bucket-sdk": "^0.2.2",
-    "dr-js": "0.18.2-dev.0",
-    "dr-server": "0.0.28-dev.3",
     "dev-dep-tool": "0.5.1-dev.0",
-    "dev-dep-web": "0.5.1-dev.0"
+    "dev-dep-web": "0.5.1-dev.0",
+    "dr-js": "0.18.2-dev.0",
+    "dr-server": "0.0.28-dev.4"
   }
 }
