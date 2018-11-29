@@ -1,11 +1,11 @@
 import { resolve } from 'path'
 import { writeFileSync } from 'fs'
 
-import { argvFlag, runMain } from 'dev-dep-tool/library/main'
-import { getLogger } from 'dev-dep-tool/library/logger'
-import { autoAppendMarkdownHeaderLink, renderMarkdownFileLink } from 'dev-dep-tool/library/ExportIndex/renderMarkdown'
+import { argvFlag, runMain } from 'dev-dep-tool/module/main'
+import { getLogger } from 'dev-dep-tool/module/logger'
+import { autoAppendMarkdownHeaderLink, renderMarkdownFileLink } from 'dev-dep-tool/module/ExportIndex/renderMarkdown'
 
-import { stringIndentLine } from 'dr-js/library/common/format'
+import { stringIndentLine } from 'dr-js/module/common/format'
 import { formatUsage } from 'source/option'
 
 const PATH_ROOT = resolve(__dirname, '..')

@@ -60,10 +60,10 @@
 >           bucket name
 >     --service-custom -C [OPTIONAL-CHECK] [ARGUMENT=0+]
 >         custom server for file upload/download/delete, no list
->       --custom-auth-config [OPTIONAL-CHECK] [ARGUMENT=1]
->       --custom-modify-url [OPTIONAL-CHECK] [ARGUMENT=1]
->       --custom-upload-url [OPTIONAL-CHECK] [ARGUMENT=1]
->       --custom-download-url [OPTIONAL-CHECK] [ARGUMENT=1]
+>       --custom-auth-file [OPTIONAL-CHECK] [ARGUMENT=1]
+>       --custom-path-action-url [OPTIONAL-CHECK] [ARGUMENT=1]
+>       --custom-file-upload-url [OPTIONAL-CHECK] [ARGUMENT=1]
+>       --custom-file-download-url [OPTIONAL-CHECK] [ARGUMENT=1]
 >       --custom-bucket [OPTIONAL-CHECK] [ARGUMENT=1]
 >           bucket name
 >     --git-branch -B [OPTIONAL-CHECK] [ARGUMENT=1]
@@ -104,10 +104,10 @@
 >     export PACKAGER_TC_REGION="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_TC_BUCKET="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_SERVICE_CUSTOM="[OPTIONAL-CHECK] [ARGUMENT=0+]"
->     export PACKAGER_CUSTOM_AUTH_CONFIG="[OPTIONAL-CHECK] [ARGUMENT=1]"
->     export PACKAGER_CUSTOM_MODIFY_URL="[OPTIONAL-CHECK] [ARGUMENT=1]"
->     export PACKAGER_CUSTOM_UPLOAD_URL="[OPTIONAL-CHECK] [ARGUMENT=1]"
->     export PACKAGER_CUSTOM_DOWNLOAD_URL="[OPTIONAL-CHECK] [ARGUMENT=1]"
+>     export PACKAGER_CUSTOM_AUTH_FILE="[OPTIONAL-CHECK] [ARGUMENT=1]"
+>     export PACKAGER_CUSTOM_PATH_ACTION_URL="[OPTIONAL-CHECK] [ARGUMENT=1]"
+>     export PACKAGER_CUSTOM_FILE_UPLOAD_URL="[OPTIONAL-CHECK] [ARGUMENT=1]"
+>     export PACKAGER_CUSTOM_FILE_DOWNLOAD_URL="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_CUSTOM_BUCKET="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_GIT_BRANCH="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_GIT_COMMIT_HASH="[OPTIONAL-CHECK] [ARGUMENT=1]"
@@ -143,10 +143,10 @@
 >     "tcRegion": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "tcBucket": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "serviceCustom": [ "[OPTIONAL-CHECK] [ARGUMENT=0+]" ],
->     "customAuthConfig": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
->     "customModifyUrl": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
->     "customUploadUrl": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
->     "customDownloadUrl": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
+>     "customAuthFile": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
+>     "customPathActionUrl": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
+>     "customFileUploadUrl": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
+>     "customFileDownloadUrl": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "customBucket": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "gitBranch": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "gitCommitHash": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],

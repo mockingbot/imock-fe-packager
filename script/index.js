@@ -1,11 +1,11 @@
 import { resolve } from 'path'
 import { execSync } from 'child_process'
 
-import { argvFlag, runMain } from 'dev-dep-tool/library/main'
-import { getLogger } from 'dev-dep-tool/library/logger'
-import { getScriptFileListFromPathList } from 'dev-dep-tool/library/fileList'
-import { initOutput, verifyOutputBinVersion, packOutput, publishOutput } from 'dev-dep-tool/library/commonOutput'
-import { getTerserOption, minifyFileListWithTerser } from 'dev-dep-tool/library/minify'
+import { argvFlag, runMain } from 'dev-dep-tool/module/main'
+import { getLogger } from 'dev-dep-tool/module/logger'
+import { getScriptFileListFromPathList } from 'dev-dep-tool/module/fileList'
+import { initOutput, verifyOutputBinVersion, packOutput, publishOutput } from 'dev-dep-tool/module/commonOutput'
+import { getTerserOption, minifyFileListWithTerser } from 'dev-dep-tool/module/minify'
 
 import { modify } from 'dr-js/module/node/file/Modify'
 

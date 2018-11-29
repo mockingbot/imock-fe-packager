@@ -27,7 +27,7 @@ const runMode = async (mode, { getOptionOptional, getSingleOption, getSingleOpti
           : {}
 
   isServiceCustom
-    ? log(`[Bucket] CUSTOM: ${bucket} (${getSingleOption('custom-upload-url')})`)
+    ? log(`[Bucket] CUSTOM: ${bucket} (${getSingleOption('custom-file-upload-url')})`)
     : log(`[Bucket] ${isServiceAws ? 'AWS' : isServiceOss ? 'OSS' : 'TC'}: ${bucket} (${region})`)
 
   const bucketService = isServiceAws ? await connectAwsBucket({
@@ -47,10 +47,10 @@ const runMode = async (mode, { getOptionOptional, getSingleOption, getSingleOpti
     region,
     bucket
   }) : isServiceCustom ? await connectCustomBucket({
-    fileAuthConfig: getSingleOption('custom-auth-config'),
-    urlFileModify: getSingleOption('custom-modify-url'),
-    urlFileUpload: getSingleOption('custom-upload-url'),
-    urlFileDownload: getSingleOption('custom-download-url'),
+    fileAuth: getSingleOption('custom-auth-file'),
+    urlPathAction: getSingleOption('custom-path-action-url'),
+    urlFileUpload: getSingleOption('custom-file-upload-url'),
+    urlFileDownload: getSingleOption('custom-file-download-url'),
     bucket
   }) : null
 

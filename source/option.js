@@ -68,10 +68,10 @@ const OPTION_CONFIG = {
           shortName: 'C',
           description: `custom server for file upload/download/delete, no list`,
           extendFormatList: [
-            { ...SinglePath, name: 'custom-auth-config' },
-            { ...SingleString, name: 'custom-modify-url' },
-            { ...SingleString, name: 'custom-upload-url' },
-            { ...SingleString, name: 'custom-download-url' },
+            { ...SinglePath, name: 'custom-auth-file' },
+            { ...SingleString, name: 'custom-path-action-url' },
+            { ...SingleString, name: 'custom-file-upload-url' },
+            { ...SingleString, name: 'custom-file-download-url' },
             { ...SingleString, name: 'custom-bucket', description: `bucket name` }
           ]
         },

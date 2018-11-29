@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "imock-fe-packager",
-  "version": "2.3.1-dev.0",
+  "version": "3.0.0-dev.0",
   "author": "mockingbot",
   "license": "MIT",
   "description": "Upload/Download directory to/from AWS-S3/Ali-OSS/TenCent-Cloud.",
@@ -17,19 +17,21 @@
     "// build =======================": "",
     "build-library": "babel-node ./script/webpack production profile",
     "build-library-dev": "babel-node ./script/webpack development watch",
+    "build-library-babel": "babel ./source --out-dir ./output-gitignore/library",
+    "build-library-babel-dev": "cross-env BABEL_ENV=dev npm run build-library-babel -- --watch",
     "// ==============================": "",
     "analyze-stat": "npx webpack-bundle-analyzer .temp-gitignore/profile-stat.json",
     "prepack": "echo \"Error: pack with script-*\" && exit 1"
   },
   "engines": {
-    "node": ">=8.8",
+    "node": ">=8.12",
     "npm": ">=6"
   },
   "devDependencies": {
-    "bucket-sdk": "0.2.2-dev.0",
-    "dr-js": "0.17.1-dev.0",
-    "dr-server": "0.0.27-dev.0",
-    "dev-dep-tool": "0.4.1-dev.0",
-    "dev-dep-web": "^0.4.0"
+    "bucket-sdk": "^0.2.2",
+    "dr-js": "0.18.2-dev.0",
+    "dr-server": "0.0.28-dev.3",
+    "dev-dep-tool": "0.5.1-dev.0",
+    "dev-dep-web": "0.5.1-dev.0"
   }
 }
