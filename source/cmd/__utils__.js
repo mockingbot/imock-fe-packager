@@ -9,7 +9,7 @@ import { getEntityTagByContentHash } from 'dr-js/module/node/module/EntityTag'
 const getGitBranch = () => execSync('git symbolic-ref --short HEAD').toString().replace(/\s/g, '')
 const getGitCommitHash = () => execSync('git log -1 --format="%H"').toString().replace(/\s/g, '')
 
-const doTarCompress = async (sourcePath, outputFileName) => run({ command: 'tar', argList: [ '-czf', outputFileName, '-C', sourcePath, '.' ] }).promise
+const doTarCompress = async (sourcePath, outputFileName) => run({ command: 'tar', argList: [ '-czf', outputFileName, '-C', sourcePath, '.' ], option: { env: { ...process.env, GZIP: '-9' } } }).promise
 const doTarExtract = async (sourceFileName, outputPath) => run({ command: 'tar', argList: [ '--strip-components', '1', '-xzf', sourceFileName, '-C', outputPath ] }).promise
 
 const collectPackageHash = async (pathPackage) => {

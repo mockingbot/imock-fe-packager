@@ -85,18 +85,23 @@ const main = async () => {
   const mode = optionData.getSingleOptionOptional('mode')
   const log = optionData.getOptionOptional('quiet') ? () => {} : console.log
 
-  if (mode) {
-    let prevTime = clock()
-    const logWithTime = (...args) => {
-      const deltaTime = clock() - prevTime
-      prevTime += deltaTime
-      log(...args, `(+${formatTime(deltaTime)})`)
-    }
-    await runMode(mode, optionData, logWithTime).catch((error) => {
-      console.warn(`[Error] in mode: ${mode}:`, error.stack || error)
-      process.exit(2)
-    })
-  } else optionData.getOptionOptional('version') ? console.log(JSON.stringify({ packageName, packageVersion }, null, '  ')) : console.log(formatUsage())
+  if (!mode) {
+    return optionData.getOptionOptional('version')
+      ? console.log(JSON.stringify({ packageName, packageVersion }, null, '  '))
+      : console.log(formatUsage(null, optionData.getOptionOptional('help') ? null : 'simple'))
+  }
+
+  let prevTime = clock()
+  const logWithTime = (...args) => {
+    const deltaTime = clock() - prevTime
+    prevTime += deltaTime
+    log(...args, `(+${formatTime(deltaTime)})`)
+  }
+
+  await runMode(mode, optionData, logWithTime).catch((error) => {
+    console.warn(`[Error] in mode: ${mode}:`, error.stack || error)
+    process.exit(2)
+  })
 }
 
 main().catch((error) => {
