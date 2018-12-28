@@ -6,26 +6,26 @@
 📄 [source/option.js](source/option.js)
 > ```
 > CLI Usage:
->   --config -c [OPTIONAL] [ARGUMENT=1]
->       # from JSON: set to 'path/to/config.json'
->       # from ENV: set to 'env'
->   --help -h [OPTIONAL] [ARGUMENT=0+]
->       set to enable
->   --version -v [OPTIONAL] [ARGUMENT=0+]
->       set to enable
->   --quiet -q [OPTIONAL] [ARGUMENT=0+]
->       reduce most output
->   --mode -m [OPTIONAL] [ARGUMENT=1]
+>   --config --c -c [OPTIONAL] [ARGUMENT=1]
+>       from ENV: set to "env"
+>       from JS/JSON file: set to "path/to/config.js|json"
+>   --help --h -h [OPTIONAL] [ARGUMENT=0+]
+>       show full help, or human readable output
+>   --version --v -v [OPTIONAL] [ARGUMENT=0+]
+>       show version
+>   --quiet --q -q [OPTIONAL] [ARGUMENT=0+]
+>       less log
+>   --mode --m -m [OPTIONAL] [ARGUMENT=1]
 >       one of:
 >         list upload upload-file download
 >         download-file delete-outdated delete-file
->     --path-pack -p [OPTIONAL-CHECK] [ARGUMENT=1]
+>     --path-pack --p -p [OPTIONAL-CHECK] [ARGUMENT=1]
 >         required for 'upload'
->     --path-unpack -u [OPTIONAL-CHECK] [ARGUMENT=1]
+>     --path-unpack --u -u [OPTIONAL-CHECK] [ARGUMENT=1]
 >         required for 'download'
->     --path-file -P [OPTIONAL-CHECK] [ARGUMENT=1]
+>     --path-file --P -P [OPTIONAL-CHECK] [ARGUMENT=1]
 >         required for 'upload-file' or 'download-file'
->     --key-file -K [OPTIONAL-CHECK] [ARGUMENT=1]
+>     --key-file --K -K [OPTIONAL-CHECK] [ARGUMENT=1]
 >         required for 'upload-file' or 'download-file' or 'delete-file'
 >     --list-key-prefix [OPTIONAL-CHECK] [ARGUMENT=1]
 >         for 'list'
@@ -33,15 +33,15 @@
 >         for 'upload', 'upload-list', default: 'false'
 >     --delete-outdated-time [OPTIONAL-CHECK] [ARGUMENT=1]
 >         in seconds, for 'delete-outdated', default: '2592000' (30 day)
->     --service-aws -a [OPTIONAL-CHECK] [ARGUMENT=0+]
+>     --service-aws --a -a [OPTIONAL-CHECK] [ARGUMENT=0+]
 >         set to enable
 >       --aws-access-key-id [OPTIONAL-CHECK] [ARGUMENT=1]
->       --aws-secret-access-key [OPTIONAL-CHECK] [ARGUMENT=1]
+>       --aws-access-access-key [OPTIONAL-CHECK] [ARGUMENT=1]
 >       --aws-region [OPTIONAL-CHECK] [ARGUMENT=1]
 >           region name, sample: 'cn-north-1'
 >       --aws-s3-bucket --aws-bucket [OPTIONAL-CHECK] [ARGUMENT=1]
 >           bucket name
->     --service-oss -o [OPTIONAL-CHECK] [ARGUMENT=0+]
+>     --service-oss --o -o [OPTIONAL-CHECK] [ARGUMENT=0+]
 >         set to enable
 >       --oss-access-key-id [OPTIONAL-CHECK] [ARGUMENT=1]
 >       --oss-access-key-secret [OPTIONAL-CHECK] [ARGUMENT=1]
@@ -49,7 +49,7 @@
 >           region name, sample: 'oss-cn-hongkong'
 >       --oss-bucket [OPTIONAL-CHECK] [ARGUMENT=1]
 >           bucket name
->     --service-tc -t [OPTIONAL-CHECK] [ARGUMENT=0+]
+>     --service-tc --t -t [OPTIONAL-CHECK] [ARGUMENT=0+]
 >         set to enable
 >       --tc-app-id [OPTIONAL-CHECK] [ARGUMENT=1]
 >       --tc-secret-id [OPTIONAL-CHECK] [ARGUMENT=1]
@@ -58,7 +58,7 @@
 >           region name, sample: 'ap-hongkong'
 >       --tc-bucket [OPTIONAL-CHECK] [ARGUMENT=1]
 >           bucket name
->     --service-custom -C [OPTIONAL-CHECK] [ARGUMENT=0+]
+>     --service-custom --C -C [OPTIONAL-CHECK] [ARGUMENT=0+]
 >         custom server for file upload/download/delete, no list
 >       --custom-auth-file [OPTIONAL-CHECK] [ARGUMENT=1]
 >       --custom-path-action-url [OPTIONAL-CHECK] [ARGUMENT=1]
@@ -68,10 +68,10 @@
 >           in msec, default 30sec
 >       --custom-bucket [OPTIONAL-CHECK] [ARGUMENT=1]
 >           bucket name
->     --git-branch -B [OPTIONAL-CHECK] [ARGUMENT=1]
+>     --git-branch --B -B [OPTIONAL-CHECK] [ARGUMENT=1]
 >         git branch name like 'master'
 >         default use 'git symbolic-ref --short HEAD'
->     --git-commit-hash -H [OPTIONAL-CHECK] [ARGUMENT=1]
+>     --git-commit-hash --H -H [OPTIONAL-CHECK] [ARGUMENT=1]
 >         git commit hash like 'a1b2c3d4', or 'latest' for 'download'
 >         default use 'git log -1 --format="%H"'
 > ENV Usage:
@@ -91,7 +91,7 @@
 >     export PACKAGER_DELETE_OUTDATED_TIME="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_SERVICE_AWS="[OPTIONAL-CHECK] [ARGUMENT=0+]"
 >     export PACKAGER_AWS_ACCESS_KEY_ID="[OPTIONAL-CHECK] [ARGUMENT=1]"
->     export PACKAGER_AWS_SECRET_ACCESS_KEY="[OPTIONAL-CHECK] [ARGUMENT=1]"
+>     export PACKAGER_AWS_ACCESS_ACCESS_KEY="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_AWS_REGION="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_AWS_S3_BUCKET="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_SERVICE_OSS="[OPTIONAL-CHECK] [ARGUMENT=0+]"
@@ -115,7 +115,7 @@
 >     export PACKAGER_GIT_BRANCH="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >     export PACKAGER_GIT_COMMIT_HASH="[OPTIONAL-CHECK] [ARGUMENT=1]"
 >   "
-> JSON Usage:
+> CONFIG Usage:
 >   {
 >     "config": [ "[OPTIONAL] [ARGUMENT=1]" ],
 >     "help": [ "[OPTIONAL] [ARGUMENT=0+]" ],
@@ -131,7 +131,7 @@
 >     "deleteOutdatedTime": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "serviceAws": [ "[OPTIONAL-CHECK] [ARGUMENT=0+]" ],
 >     "awsAccessKeyId": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
->     "awsSecretAccessKey": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
+>     "awsAccessAccessKey": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "awsRegion": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "awsS3Bucket": [ "[OPTIONAL-CHECK] [ARGUMENT=1]" ],
 >     "serviceOss": [ "[OPTIONAL-CHECK] [ARGUMENT=0+]" ],

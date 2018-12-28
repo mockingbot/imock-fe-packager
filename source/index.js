@@ -13,65 +13,65 @@ import { connectCustomBucket } from './customBucketService'
 
 const formatFilename = (filename = '') => filename.replace(/[/:;*%?]/g, '_')
 
-const runMode = async (mode, { getOptionOptional, getSingleOption, getSingleOptionOptional }, log) => {
-  const isServiceAws = Boolean(getOptionOptional('service-aws'))
-  const isServiceOss = Boolean(getOptionOptional('service-oss'))
-  const isServiceTc = Boolean(getOptionOptional('service-tc'))
-  const isServiceCustom = Boolean(getOptionOptional('service-custom'))
+const runMode = async (mode, { tryGet, getFirst, tryGetFirst }, log) => {
+  const isServiceAws = Boolean(tryGet('service-aws'))
+  const isServiceOss = Boolean(tryGet('service-oss'))
+  const isServiceTc = Boolean(tryGet('service-tc'))
+  const isServiceCustom = Boolean(tryGet('service-custom'))
   if (!isServiceAws && !isServiceOss && !isServiceTc && !isServiceCustom) throw new Error('service not specified')
 
-  const { region, bucket } = isServiceAws ? { region: getSingleOption('aws-region'), bucket: getSingleOption('aws-s3-bucket') }
-    : isServiceOss ? { region: getSingleOption('oss-region'), bucket: getSingleOption('oss-bucket') }
-      : isServiceTc ? { region: getSingleOption('tc-region'), bucket: getSingleOption('tc-bucket') }
-        : isServiceCustom ? { region: 'CUSTOM', bucket: getSingleOption('custom-bucket') }
+  const { region, bucket } = isServiceAws ? { region: getFirst('aws-region'), bucket: getFirst('aws-s3-bucket') }
+    : isServiceOss ? { region: getFirst('oss-region'), bucket: getFirst('oss-bucket') }
+      : isServiceTc ? { region: getFirst('tc-region'), bucket: getFirst('tc-bucket') }
+        : isServiceCustom ? { region: 'CUSTOM', bucket: getFirst('custom-bucket') }
           : {}
 
   isServiceCustom
-    ? log(`[Bucket] CUSTOM: ${bucket} (${getSingleOption('custom-file-upload-url')})`)
+    ? log(`[Bucket] CUSTOM: ${bucket} (${getFirst('custom-file-upload-url')})`)
     : log(`[Bucket] ${isServiceAws ? 'AWS' : isServiceOss ? 'OSS' : 'TC'}: ${bucket} (${region})`)
 
   const bucketService = isServiceAws ? await connectAwsBucket({
-    accessKeyId: getSingleOption('aws-access-key-id'),
-    secretAccessKey: getSingleOption('aws-secret-access-key'),
+    accessKeyId: getFirst('aws-access-key-id'),
+    secretAccessKey: getFirst('aws-secret-access-key'),
     region,
     bucket
   }) : isServiceOss ? await connectOssBucket({
-    accessKeyId: getSingleOption('oss-access-key-id'),
-    accessKeySecret: getSingleOption('oss-access-key-secret'),
+    accessKeyId: getFirst('oss-access-key-id'),
+    accessKeySecret: getFirst('oss-access-key-secret'),
     region,
     bucket
   }) : isServiceTc ? await connectTcBucket({
-    appId: getSingleOption('tc-app-id'),
-    secretId: getSingleOption('tc-secret-id'),
-    secretKey: getSingleOption('tc-secret-key'),
+    appId: getFirst('tc-app-id'),
+    secretId: getFirst('tc-secret-id'),
+    secretKey: getFirst('tc-secret-key'),
     region,
     bucket
   }) : isServiceCustom ? await connectCustomBucket({
-    fileAuth: getSingleOption('custom-auth-file'),
-    urlPathAction: getSingleOption('custom-path-action-url'),
-    urlFileUpload: getSingleOption('custom-file-upload-url'),
-    urlFileDownload: getSingleOption('custom-file-download-url'),
-    timeout: getSingleOptionOptional('custom-fetch-timeout') || 30 * 1000,
+    fileAuth: getFirst('custom-auth-file'),
+    urlPathAction: getFirst('custom-path-action-url'),
+    urlFileUpload: getFirst('custom-file-upload-url'),
+    urlFileDownload: getFirst('custom-file-download-url'),
+    timeout: tryGetFirst('custom-fetch-timeout') || 30 * 1000,
     bucket
   }) : null
 
-  if (mode === 'list') return doList(bucketService, { listKeyPrefix: getSingleOptionOptional('list-key-prefix') }, log)
-  if (mode === 'delete-outdated') return doDeleteOutdated(bucketService, { outdatedTime: getSingleOptionOptional('delete-outdated-time') }, log)
+  if (mode === 'list') return doList(bucketService, { listKeyPrefix: tryGetFirst('list-key-prefix') }, log)
+  if (mode === 'delete-outdated') return doDeleteOutdated(bucketService, { outdatedTime: tryGetFirst('delete-outdated-time') }, log)
 
-  const uploadPublicReadAccess = Boolean(getOptionOptional('upload-public-read-access'))
+  const uploadPublicReadAccess = Boolean(tryGet('upload-public-read-access'))
 
-  if (mode === 'upload-file') return doUploadFile(bucketService, { pathFile: getSingleOption('path-file'), keyFile: getSingleOption('key-file'), uploadPublicReadAccess }, log)
-  if (mode === 'download-file') return doDownloadFile(bucketService, { pathFile: getSingleOption('path-file'), keyFile: getSingleOption('key-file') }, log)
-  if (mode === 'delete-file') return doDeleteFile(bucketService, { keyFile: getSingleOption('key-file') }, log)
+  if (mode === 'upload-file') return doUploadFile(bucketService, { pathFile: getFirst('path-file'), keyFile: getFirst('key-file'), uploadPublicReadAccess }, log)
+  if (mode === 'download-file') return doDownloadFile(bucketService, { pathFile: getFirst('path-file'), keyFile: getFirst('key-file') }, log)
+  if (mode === 'delete-file') return doDeleteFile(bucketService, { keyFile: getFirst('key-file') }, log)
 
-  const gitBranch = getSingleOptionOptional('git-branch') || getGitBranch()
-  const gitCommitHash = getSingleOptionOptional('git-commit-hash') || getGitCommitHash()
+  const gitBranch = tryGetFirst('git-branch') || getGitBranch()
+  const gitCommitHash = tryGetFirst('git-commit-hash') || getGitCommitHash()
   const nameFileTarGz = formatFilename(`[${gitBranch}]${gitCommitHash}.tar.gz`)
 
-  if (mode === 'download') return doDownload(bucketService, { pathUnpack: getSingleOption('path-unpack'), nameFileTarGz }, log)
+  if (mode === 'download') return doDownload(bucketService, { pathUnpack: getFirst('path-unpack'), nameFileTarGz }, log)
   if (mode === 'upload') {
     await doUpload(bucketService, {
-      pathPack: getSingleOption('path-pack'),
+      pathPack: getFirst('path-pack'),
       nameFileTarGz,
       nameFileLatestTarGz: formatFilename(`[${gitBranch}]latest.tar.gz`),
       packageInfoString: [ region, bucket, gitBranch, gitCommitHash, (new Date()).toISOString() ].join('\n'),
@@ -82,13 +82,13 @@ const runMode = async (mode, { getOptionOptional, getSingleOption, getSingleOpti
 
 const main = async () => {
   const optionData = await parseOption()
-  const mode = optionData.getSingleOptionOptional('mode')
-  const log = optionData.getOptionOptional('quiet') ? () => {} : console.log
+  const mode = optionData.tryGetFirst('mode')
+  const log = optionData.tryGet('quiet') ? () => {} : console.log
 
   if (!mode) {
-    return optionData.getOptionOptional('version')
+    return optionData.tryGet('version')
       ? console.log(JSON.stringify({ packageName, packageVersion }, null, '  '))
-      : console.log(formatUsage(null, optionData.getOptionOptional('help') ? null : 'simple'))
+      : console.log(formatUsage(null, optionData.tryGet('help') ? null : 'simple'))
   }
 
   let prevTime = clock()
